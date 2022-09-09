@@ -1,0 +1,7 @@
+{
+  "name": "tontine",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
