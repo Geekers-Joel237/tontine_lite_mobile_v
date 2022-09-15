@@ -74,16 +74,16 @@
           <!-- </div> -->
         </ion-card>
     </ion-grid>
-    <ion-grid *ngIf="!current && currentUser.user.role === 'admin'">
-      <ion-card  class="ion-no-border" *ngFor="let item of demandes;let i = index;">
+
+    <ion-grid *ngIf="currentUser.user.role === 'admin' && !current ">
+      <ion-card  class="ion-no-border" *ngFor="let item of tontines;let i = index;" (click)="presentActionSheet(item)">
         <!-- <div [ngClass]="'success'? demande.tontine_id === item.id : ''"> -->
               <ion-row>
                 <ion-col size="9">
                   <ion-text style="font-weight:bold;color:black">{{item.nomT}}</ion-text>
                 </ion-col>
                 <ion-col size="3" class="ion-text-end">
-                  <ion-icon  *ngIf=" !item.validation" color="warning" name="alarm-outline"></ion-icon>
-                  <!-- <ion-icon name="add-outline" (click)="presentActionSheet(item)"></ion-icon> -->
+                    <ion-icon name="add-outline" (click)="presentActionSheet(item)"></ion-icon>
                 </ion-col>
               </ion-row>
               <!-- </ion-col> -->
@@ -94,25 +94,20 @@
               </ion-row>
               <ion-row>
                 <ion-col size="8">
-                  <ion-button *ngIf="!item.validation" size="small" shape="round"
-                   fill="outline"
-                   (click)="cancelDemande(item.id)"
-                   >Annuler</ion-button>
-                  <ion-text *ngIf="item.validation" color="medium">
-                   Valide le {{item.updated_at | date}}
+                  <ion-text *ngIf="item.type === 'Ouverte' && currentUser.user.role === 'admin'" color="medium">
+                    <ion-badge *ngIf="item.demandes" >{{item.demandes.length}}</ion-badge>
+                    Demande{{item.demandes.length > 1 ? 's' : ''}}
                   </ion-text>
                 </ion-col>
-                <ion-col size="4" class="ion-text-end">
-                  <!-- <ion-icon  *ngIf=" !item.validation" color="warning" name="alarm-outline"></ion-icon> -->
-                  <ion-icon *ngIf="item.validation" color="success" name="checkmark-outline"></ion-icon>
-                  <ion-text color="medium">
-                    Envoye le {{item.created_at | date}}
-                   </ion-text>
+                <ion-col size="2" class="ion-text-end">
+                  <ion-icon *ngIf=" demandes && demandes.includes(item.id)" color="warning" name="alarm-outline"></ion-icon>
+                  <ion-icon *ngIf="autorisations && autorisations.includes(item.id)" color="success" name="checkmark-outline"></ion-icon>
+                  <ion-icon *ngIf="mesTontines && mesTontines.includes(item.id)" color="success" name="checkmark-outline"></ion-icon>
                 </ion-col>
-                <!-- <ion-col size="2" class="ion-text-end">
+                <ion-col size="2" class="ion-text-end">
                   <ion-icon *ngIf="item.type === 'Ouverte'" name="lock-open-outline"></ion-icon>
                   <ion-icon *ngIf="item.type === 'Fermee'" name="lock-closed-outline"></ion-icon>
-                </ion-col> -->
+                </ion-col>
               </ion-row>
               <!-- <ion-text color="success"style="font-weight:bold" slot="end"> {{item.type}} </ion-text> -->
             <!-- </ion-item> -->
@@ -169,6 +164,12 @@
           <!-- </div> -->
         </ion-card>
     </ion-grid>
+
+    <!-- <ion-grid  *ngIf=" currentUser.user.role === 'admin' && !current">
+      <ion-card>
+        123
+      </ion-card>
+    </ion-grid> -->
   </ion-grid>
 
 </ion-content>

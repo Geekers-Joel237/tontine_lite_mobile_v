@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DemandesService } from 'src/app/services/demandes.service';
+import { TontinesService } from 'src/app/services/tontines.service';
+import { ActionSheetController } from '@ionic/angular';
 
 @Component({
   selector: 'app-demandes',
@@ -19,6 +21,9 @@ export class DemandesPage implements OnInit {
   constructor(
   private router: Router,
   private demandeService: DemandesService,
+  private tontineService: TontinesService,
+  public actionSheetController: ActionSheetController,
+
 
   ) { }
 
@@ -43,6 +48,17 @@ export class DemandesPage implements OnInit {
         console.log(data);
         this.demandes =  data.data;
       });
+    }else{
+      this.tontineService.getUserTontines(this.user.id).subscribe(
+        (data)=>{
+          this.tontines =[...new Set(data.data)]
+          .filter((tontine: any)=>tontine.type === 'Ouverte');
+          console.log(this.tontines);
+        },
+        (err)=>{
+          console.log(err);
+        }
+      );
     }
   }
 
@@ -70,5 +86,45 @@ export class DemandesPage implements OnInit {
     },(err)=>{
       console.log(err);
     });
+  }
+
+  async presentActionSheet(item: any) {
+    const actionSheet = await this.actionSheetController.create({
+      header:item.nomT,
+      cssClass: 'my-custom-class',
+      buttons: [{
+        text: 'Reglement',
+        icon: 'document',
+
+        handler: () => {
+          // this.presentAlert2(item);
+
+        }
+      }, {
+        text: this.currentUser.user.role === 'membre' ? 'Integrer' : 'Partager',
+        icon: 'share',
+        handler: () => {
+          if(item.type === 'Fermee'){
+            console.log('Fermee');
+            // this.presentAlert(item);
+          }else{
+            console.log('Ouverte');
+            // this.postDemande({user_id:this.currentUser.user.id,tontine_id:item.id,exercice_id:null});
+            // this.getTontinesDemandesUser(this.currentUser.user.id,true);
+          }
+        }
+      }, {
+        text: 'Fermer',
+        icon: 'close',
+        role: 'cancel',
+        handler: () => {
+          console.log('Cancel clicked');
+        }
+      }]
+    });
+    await actionSheet.present();
+
+    const { role, data } = await actionSheet.onDidDismiss();
+    console.log('onDidDismiss resolved with role and data', role, data);
   }
 }

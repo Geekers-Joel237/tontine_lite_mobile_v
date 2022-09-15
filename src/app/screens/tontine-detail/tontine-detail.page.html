@@ -14,5 +14,58 @@
 </ion-header>
 
 <ion-content color="secondary">
+<ion-grid>
+  <ion-grid>
+    <ion-card class="ion-no-border">
+      <ion-row>
+        <ion-col size="6">
+          <ion-row>
+            <ion-text>Tontine</ion-text>
+          </ion-row>
+          <ion-row>Nom Tontine</ion-row>
+        </ion-col>
+        <ion-col size="3"></ion-col>
+        <ion-col size="3">
+          <ion-button >
+            <ion-icon  name="add" size="medium" ></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-card>
+  </ion-grid>
 
+  <!-- <ion-grid> -->
+    <ion-row>
+      <ion-col size="5">
+        <ion-card>
+          <ion-row>
+            <ion-text>
+              Income
+            </ion-text>
+          </ion-row>
+          <ion-row>
+            <ion-text>
+              555 XAF
+            </ion-text>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+      <ion-col size="2"></ion-col>
+      <ion-col size="5"></ion-col>
+    </ion-row>
+
+  <!-- </ion-grid> -->
+</ion-grid>
+<ion-fab *ngIf="currentUser.user.role === 'admin'" vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button>
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+  <ion-fab-list side="start">
+    <ion-fab-button>
+      <ion-icon name="calendar-number-outline" (click)="showActionSheet()"></ion-icon>
+      <!-- <ion-icon name="wallet-outline" [routerLink]="['/add-tontine']" routerLinkActive="router-link-active" ></ion-icon> -->
+    </ion-fab-button>
+    <ion-label slot="end">Exercice</ion-label>
+  </ion-fab-list>
+</ion-fab>
 </ion-content>

@@ -266,4 +266,10 @@ getListDemandes(userId: number,type: string){
   }).subscribe(data => this.adminTontines = data.data);
 }
 
+handleDetail(item: any)
+{
+  if(this.currentUser.user.role === 'admin'){
+    this.router.navigate(['/tontine-detail/'+item.id]);
+  }
+}
 }
