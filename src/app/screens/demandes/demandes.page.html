@@ -1,0 +1,174 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-row >
+      <ion-col size="3">
+        <!-- <ion-icon name="arrow-back-outline" size="large" [routerLink]="['/tabs-menu/tontines']"></ion-icon> -->
+      </ion-col>
+      <ion-col size="6">
+          <ion-title color="light" class="text-title ion-text-center ion-text-capitalize">Tontine Lite</ion-title>
+      </ion-col>
+      <ion-col size="3" >
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="secondary">
+  <ion-segment (ionChange)="segmentChanged($event)" value='Mes Tontines'>
+    <ion-segment-button value="Mes Tontines">
+      <ion-label class="text-title">Mes Tontines</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="demandes" *ngIf="currentUser.user.role === 'admin'">
+      <ion-label class="text-title">Demandes</ion-label>
+    </ion-segment-button>
+    <ion-segment-button  value="Mes Demandes" *ngIf=" currentUser.user.role === 'membre'">
+      <ion-label class="text-title">Mes Demandes</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <ion-grid>
+    <ion-grid *ngIf="!current && currentUser.user.role === 'membre'">
+      <ion-card  class="ion-no-border" *ngFor="let item of demandes;let i = index;">
+        <!-- <div [ngClass]="'success'? demande.tontine_id === item.id : ''"> -->
+              <ion-row>
+                <ion-col size="9">
+                  <ion-text style="font-weight:bold;color:black">{{item.nomT}}</ion-text>
+                </ion-col>
+                <ion-col size="3" class="ion-text-end">
+                  <ion-icon  *ngIf=" !item.validation" color="warning" name="alarm-outline"></ion-icon>
+                  <!-- <ion-icon name="add-outline" (click)="presentActionSheet(item)"></ion-icon> -->
+                </ion-col>
+              </ion-row>
+              <!-- </ion-col> -->
+              <ion-row>
+                <ion-col >
+                  <ion-text color="medium">{{item.maxT +' membres - '+ item.montantT+' XAF'}}</ion-text>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="8">
+                  <ion-button *ngIf="!item.validation" size="small" shape="round"
+                   fill="outline"
+                   (click)="cancelDemande(item.id)"
+                   >Annuler</ion-button>
+                  <ion-text *ngIf="item.validation" color="medium">
+                   Valide le {{item.updated_at | date}}
+                  </ion-text>
+                </ion-col>
+                <ion-col size="4" class="ion-text-end">
+                  <!-- <ion-icon  *ngIf=" !item.validation" color="warning" name="alarm-outline"></ion-icon> -->
+                  <ion-icon *ngIf="item.validation" color="success" name="checkmark-outline"></ion-icon>
+                  <ion-text color="medium">
+                    Envoye le {{item.created_at | date}}
+                   </ion-text>
+                </ion-col>
+                <!-- <ion-col size="2" class="ion-text-end">
+                  <ion-icon *ngIf="item.type === 'Ouverte'" name="lock-open-outline"></ion-icon>
+                  <ion-icon *ngIf="item.type === 'Fermee'" name="lock-closed-outline"></ion-icon>
+                </ion-col> -->
+              </ion-row>
+              <!-- <ion-text color="success"style="font-weight:bold" slot="end"> {{item.type}} </ion-text> -->
+            <!-- </ion-item> -->
+            <ion-row>
+            </ion-row>
+          <!-- </div> -->
+        </ion-card>
+    </ion-grid>
+    <ion-grid *ngIf="!current && currentUser.user.role === 'admin'">
+      <ion-card  class="ion-no-border" *ngFor="let item of demandes;let i = index;">
+        <!-- <div [ngClass]="'success'? demande.tontine_id === item.id : ''"> -->
+              <ion-row>
+                <ion-col size="9">
+                  <ion-text style="font-weight:bold;color:black">{{item.nomT}}</ion-text>
+                </ion-col>
+                <ion-col size="3" class="ion-text-end">
+                  <ion-icon  *ngIf=" !item.validation" color="warning" name="alarm-outline"></ion-icon>
+                  <!-- <ion-icon name="add-outline" (click)="presentActionSheet(item)"></ion-icon> -->
+                </ion-col>
+              </ion-row>
+              <!-- </ion-col> -->
+              <ion-row>
+                <ion-col >
+                  <ion-text color="medium">{{item.maxT +' membres - '+ item.montantT+' XAF'}}</ion-text>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="8">
+                  <ion-button *ngIf="!item.validation" size="small" shape="round"
+                   fill="outline"
+                   (click)="cancelDemande(item.id)"
+                   >Annuler</ion-button>
+                  <ion-text *ngIf="item.validation" color="medium">
+                   Valide le {{item.updated_at | date}}
+                  </ion-text>
+                </ion-col>
+                <ion-col size="4" class="ion-text-end">
+                  <!-- <ion-icon  *ngIf=" !item.validation" color="warning" name="alarm-outline"></ion-icon> -->
+                  <ion-icon *ngIf="item.validation" color="success" name="checkmark-outline"></ion-icon>
+                  <ion-text color="medium">
+                    Envoye le {{item.created_at | date}}
+                   </ion-text>
+                </ion-col>
+                <!-- <ion-col size="2" class="ion-text-end">
+                  <ion-icon *ngIf="item.type === 'Ouverte'" name="lock-open-outline"></ion-icon>
+                  <ion-icon *ngIf="item.type === 'Fermee'" name="lock-closed-outline"></ion-icon>
+                </ion-col> -->
+              </ion-row>
+              <!-- <ion-text color="success"style="font-weight:bold" slot="end"> {{item.type}} </ion-text> -->
+            <!-- </ion-item> -->
+            <ion-row>
+            </ion-row>
+          <!-- </div> -->
+        </ion-card>
+    </ion-grid>
+
+    <ion-grid *ngIf=" currentUser.user.role === 'membre' && current">
+      <ion-card  class="ion-no-border" *ngFor="let item of mesTontines;let i = index;">
+        <!-- <div [ngClass]="'success'? demande.tontine_id === item.id : ''"> -->
+              <ion-row>
+                <ion-col size="9">
+                  <ion-text style="font-weight:bold;color:black">{{item.nomT}}</ion-text>
+                </ion-col>
+                <ion-col size="3" class="ion-text-end">
+                  <!-- <ion-icon  *ngIf=" !item.validation" color="warning" name="alarm-outline"></ion-icon> -->
+                  <!-- <ion-icon name="add-outline" (click)="presentActionSheet(item)"></ion-icon> -->
+                </ion-col>
+              </ion-row>
+              <!-- </ion-col> -->
+              <ion-row>
+                <ion-col >
+                  <ion-text color="medium">{{item.maxT +' membres - '+ item.montantT+' XAF'}}</ion-text>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="8">
+                  <ion-button  size="small" shape="round"
+                   fill="outline"
+                   [routerLink]="['/tontine-detail/:id']"
+                   >Explorer</ion-button>
+                  <!-- <ion-text *ngIf="item.validation" color="medium">
+                   Valide le {{item.updated_at | date}}
+                  </ion-text> -->
+                </ion-col>
+                <ion-col size="4" class="ion-text-end">
+                  <!-- <ion-icon  *ngIf=" !item.validation" color="warning" name="alarm-outline"></ion-icon> -->
+                  <!-- <ion-icon *ngIf="item.validation" color="success" name="checkmark-outline"></ion-icon> -->
+                  <ion-text color="medium">
+                    Depuis le {{item.created_at | date}}
+                   </ion-text>
+                </ion-col>
+                <!-- <ion-col size="2" class="ion-text-end">
+                  <ion-icon *ngIf="item.type === 'Ouverte'" name="lock-open-outline"></ion-icon>
+                  <ion-icon *ngIf="item.type === 'Fermee'" name="lock-closed-outline"></ion-icon>
+                </ion-col> -->
+              </ion-row>
+              <!-- <ion-text color="success"style="font-weight:bold" slot="end"> {{item.type}} </ion-text> -->
+            <!-- </ion-item> -->
+            <ion-row>
+            </ion-row>
+          <!-- </div> -->
+        </ion-card>
+    </ion-grid>
+  </ion-grid>
+
+</ion-content>

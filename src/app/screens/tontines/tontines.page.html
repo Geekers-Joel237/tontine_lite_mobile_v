@@ -1,0 +1,94 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-row >
+      <ion-col size="3">
+          <!-- <ion-icon name="menu-outline" size="large"></ion-icon> -->
+      </ion-col>
+      <ion-col size="6">
+          <ion-title color="light" class="text-title ion-text-center ion-text-capitalize">Tontine Lite</ion-title>
+      </ion-col>
+      <ion-col size="3" >
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="secondary">
+<ion-grid>
+  <ion-item lines="none">
+    <ion-text slot="start" style="font-weight:bold;font-size:1.2em;">Tontines</ion-text>
+  </ion-item>
+  <ion-row>
+    <ion-col size="12">
+      <ion-segment scrollable>
+       <ion-chip style="padding:0;border-radius:20%" color="primary">
+        <ion-icon name="options-outline" color="primary" size="large" style="text-align:center;margin-right:5px"></ion-icon>
+       </ion-chip>
+       <ion-chip (click)="openModal()">
+       <ion-text>Filtres</ion-text>
+       <ion-badge color="danger" style="margin-left:2px"></ion-badge>
+       <ion-icon name="chevron-down-outline"></ion-icon>
+      </ion-chip>
+       <ion-chip class="chip" color="success" (click)="refreshFilter()"  style="padding:0;border-radius:100%">
+        <ion-icon name="refresh-outline" size="large" style="margin-left:5px"></ion-icon>
+        </ion-chip>
+      </ion-segment>
+    </ion-col>
+  </ion-row>
+  <ion-card  class="ion-no-border" *ngFor="let item of tontines;let i = index;">
+<!-- <div [ngClass]="'success'? demande.tontine_id === item.id : ''"> -->
+      <ion-row>
+        <ion-col size="9">
+          <ion-text style="font-weight:bold;color:black">{{item.nomT}}</ion-text>
+        </ion-col>
+        <ion-col size="3" class="ion-text-end">
+            <ion-icon name="add-outline" (click)="presentActionSheet(item)"></ion-icon>
+        </ion-col>
+      </ion-row>
+      <!-- </ion-col> -->
+      <ion-row>
+        <ion-col >
+          <ion-text color="medium">{{item.maxT +' membres - '+ item.montantT+' XAF'}}</ion-text>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="8">
+          <ion-text *ngIf="item.type === 'Ouverte' && currentUser.user.role === 'admin'" color="medium">
+            <ion-badge *ngIf="item.demandes" >{{item.demandes.length}}</ion-badge>
+            Demande{{item.demandes.length > 1 ? 's' : ''}}
+          </ion-text>
+        </ion-col>
+        <ion-col size="2" class="ion-text-end">
+          <ion-icon *ngIf=" demandes && demandes.includes(item.id)" color="warning" name="alarm-outline"></ion-icon>
+          <ion-icon *ngIf="autorisations && autorisations.includes(item.id)" color="success" name="checkmark-outline"></ion-icon>
+          <ion-icon *ngIf="mesTontines && mesTontines.includes(item.id)" color="success" name="checkmark-outline"></ion-icon>
+        </ion-col>
+        <ion-col size="2" class="ion-text-end">
+          <ion-icon *ngIf="item.type === 'Ouverte'" name="lock-open-outline"></ion-icon>
+          <ion-icon *ngIf="item.type === 'Fermee'" name="lock-closed-outline"></ion-icon>
+        </ion-col>
+      </ion-row>
+      <!-- <ion-text color="success"style="font-weight:bold" slot="end"> {{item.type}} </ion-text> -->
+    <!-- </ion-item> -->
+    <ion-row>
+    </ion-row>
+  <!-- </div> -->
+</ion-card>
+
+
+
+
+
+</ion-grid>
+<ion-fab *ngIf="currentUser.user.role === 'admin'" vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button>
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+  <ion-fab-list side="start">
+    <ion-fab-button>
+      <ion-icon name="wallet-outline" [routerLink]="['/add-tontine']" routerLinkActive="router-link-active" ></ion-icon>
+    </ion-fab-button>
+    <ion-label slot="end">Tontine</ion-label>
+  </ion-fab-list>
+</ion-fab>
+</ion-content>

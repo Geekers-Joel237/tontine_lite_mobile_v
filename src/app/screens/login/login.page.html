@@ -1,0 +1,72 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="secondary">
+    <ion-buttons slot="start">
+      <ion-icon name="chevron-back-outline" color="primary" size="large" class="ion-padding-left"></ion-icon>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content color="secondary">
+  <ion-grid >
+    <ion-row>
+      <ion-col >
+        <div class="ion-text-center ion-text-capitalize text-color">
+          <h2>Se Connecter</h2>
+          <!-- <h5>Remplir le formulaire pour vous connecter</h5> -->
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row >
+      <ion-card style="width:100%">
+        <ion-card-content>
+          <form [formGroup]="formGroup" >
+            <ion-item>
+              <ion-label position="stacked" class="label-text">Telephone</ion-label>
+              <ion-input formControlName="telephone" class="label-text" type="tel" inputmode="tel" placeholder="Telephone"></ion-input>
+              <ion-note class="label-text" slot="error" *ngIf="(telephone.dirty||telephone.touched)&& telephone.errors">champ telephone requis</ion-note>
+            </ion-item>
+
+            <ion-item style="position:relative">
+              <ion-label position="stacked" class="label-text" >Mot de passe</ion-label>
+             <ion-row style="position: relative;">
+              <ion-col size="10">
+                <ion-input [type]="password_input_type" class="label-text" placeholder="Mot De Passe" formControlName="password"></ion-input>
+              </ion-col>
+                <ion-icon class="center-right"  name="eye-off-outline" *ngIf="password_input_type==='password'" (click)="changePassInputType()"></ion-icon>
+                <ion-icon class="center-right"  name="eye-outline" *ngIf="password_input_type==='text'" (click)="changePassInputType()"></ion-icon>
+             </ion-row>
+              <ion-note class="label-text" slot="error" *ngIf="(password.dirty||password.touched)&& password.errors">invalid password</ion-note>
+            </ion-item>
+          </form>
+        </ion-card-content>
+      </ion-card>
+    </ion-row>
+    <ion-row class="ion-justify-content-end">
+      <ion-col size="4" class="ion-align-self-end" >
+        <div  class="ion-text-start">
+          <h6>
+            <a routerLink="/register">
+              <ion-text  color="primary">S'inscrire</ion-text>
+            </a>
+          </h6>
+        </div>
+      </ion-col >
+      <ion-col size="8" class="ion-align-self-end">
+        <div  class="ion-text-end">
+          <h6>
+            <a routerLink="/forget-pwd">
+              <ion-text style="color:gray">Mot de passe oublie</ion-text>
+            </a>
+          </h6>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row class="ion-justify-content-end">
+      <ion-col class="ion-align-self-end">
+        <ion-button expand="block" (click)="onSubmit()" class="ion-text-capitalize" >Se Connecter</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  </ion-content>
+
