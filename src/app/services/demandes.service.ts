@@ -39,5 +39,11 @@ export class DemandesService {
     {responseType: 'json'});
   }
 
-
+  acceptDemande(idDem: number, idUser: number): Observable<boolean> {
+    return this.http.put<boolean>(`${environment.apiUrl}/demandes/${idDem}`,{
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      user_id:idUser,
+      validation:true
+    });
+  }
 }

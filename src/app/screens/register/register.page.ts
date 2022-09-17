@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -12,6 +13,7 @@ import { country } from './countries';
 })
 export class RegisterPage implements OnInit {
   formGroup: FormGroup;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   password_input_type = 'password';
   countries = country.countries;
   code = '';
@@ -25,7 +27,7 @@ export class RegisterPage implements OnInit {
   get nom(){return this.formGroup.get('nom');}
 
   get prenom(){return this.formGroup.get('prenom');}
-  get email(){return this.formGroup.get('email');}
+  // get email(){return this.formGroup.get('email');}
 
   get telephone(){return this.formGroup.get('telephone');}
   get adresse(){return this.formGroup.get('adresse');}
@@ -48,9 +50,9 @@ export class RegisterPage implements OnInit {
 
       ],
       prenom:['',Validators.required],
-      email:['',Validators.compose([
-        Validators.required,Validators.email
-      ])],
+      // email:['',Validators.compose([
+      //   Validators.required,Validators.email
+      // ])],
       password:['',Validators.compose([
         Validators.required,Validators.minLength(8)
       ])],
@@ -72,8 +74,7 @@ export class RegisterPage implements OnInit {
     this.password_input_type === 'password'? this.password_input_type='text':this.password_input_type='password';
   }
 
- async
-   onSubmit(){
+ async onSubmit(){
     if (this.formGroup.invalid) {
       console.log('missing fields',this.formGroup.value);
       this.presentToast('top','missing fields','warning');
@@ -87,7 +88,7 @@ export class RegisterPage implements OnInit {
           localStorage.setItem('user',JSON.stringify(data));
           console.log('Success', data);
         this.presentToast('top','Register Success','success');
-          this.router.navigate(['/tabs-menu']);
+          this.router.navigate(['/tabs-menu/tontines']);
 
         },(err)=>{
           console.log('Error',err);
@@ -107,21 +108,19 @@ export class RegisterPage implements OnInit {
     }
   }
 
-  async presentToast(position: 'top' | 'middle' | 'bottom',msg: string,color:string) {
+  async presentToast(position: 'top' | 'middle' | 'bottom',msg: string,color: string) {
     const toast = await this.toastController.create({
       message: msg,
       duration: 1500,
-      color:color,
+      color,
       position
     });
 
     await toast.present();
   }
 
-  setCode($event:any){
-    let he= this.countries.filter((country)=>{
-      return country.country === $event.target.value;
-    })
+  setCode($event: any){
+    const he= this.countries.filter((country)=>country.country === $event.target.value);
     this.code = he[0].code;
     console.log(this.code);
   }

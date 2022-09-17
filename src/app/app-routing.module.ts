@@ -39,6 +39,10 @@ const routes: Routes = [
     path: 'tontine-detail/:id',
     loadChildren: () => import('./screens/tontine-detail/tontine-detail.module').then( m => m.TontineDetailPageModule)
   },
+  {
+    path: 'demandes-detail',
+    loadChildren: () => import('./screens/demandes-detail/demandes-detail.module').then( m => m.DemandesDetailPageModule)
+  },
   // {
   //   path: 'tabs-menu/tontines',
   //   loadChildren: () => import('./screens/tontines/tontines.module').then( m => m.TontinesPageModule)

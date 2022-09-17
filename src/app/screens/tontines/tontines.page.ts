@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { TontinesService } from 'src/app/services/tontines.service';
-import { ActionSheetController } from '@ionic/angular';
+import { ActionSheetController, IonModal } from '@ionic/angular';
 import { AlertController,ModalController } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { OverlayEventDetail } from '@ionic/core/components';
+import { FormBuilder, FormGroup } from '@angular/forms';
+
 
 @Component({
   selector: 'app-tontines',
@@ -12,6 +15,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./tontines.page.scss'],
 })
 export class TontinesPage implements OnInit {
+  @ViewChild(IonModal) modal: IonModal;
+
   autorisations = null;
   demandes = null;
   tontines = null;
@@ -19,6 +24,7 @@ export class TontinesPage implements OnInit {
   user = null;
   mesTontines = null;
   adminTontines = null;
+  formGroup: FormGroup;
 
   constructor(
     private tontineService: TontinesService,
@@ -27,10 +33,21 @@ export class TontinesPage implements OnInit {
     private toastController: ToastController,
     private router: Router,
     private modalCtrl: ModalController,
+    private fb: FormBuilder,
 
 
 
   ) { }
+
+  get nomT(){return this.formGroup.get('nomT');}
+  get membreMin(){return this.formGroup.get('membreMin');}
+  get membreMax(){return this.formGroup.get('membreMax');}
+  get montantMin(){return this.formGroup.get('montantMin');}
+  get montantMax(){return this.formGroup.get('montantMax');}
+  get ouverte(){return this.formGroup.get('ouverte');}
+  get fermee(){return this.formGroup.get('fermee');}
+
+
 
   ngOnInit() {
     this.currentUser = JSON.parse(localStorage.getItem('user'));
@@ -40,12 +57,25 @@ export class TontinesPage implements OnInit {
       return;
     }else{
       this.user = this.currentUser.user;
+      this.syncForm();
       this.getTontines();
       this.getTontinesDemandesUser(this.currentUser.user.id,false);
       this.getTontinesDemandesUser(this.currentUser.user.id,true);
       this.getTontinesUser(this.currentUser.user.id);
       this.getListDemandes(this.currentUser.user.id,'Ouverte');
     }
+  }
+
+  syncForm(){
+    this.formGroup = this.fb.group({
+      nomT:[''],
+      membreMin:[1],
+      membreMax:[''],
+      montantMin:[1],
+      montantMax:[''],
+      ouverte:[true],
+      fermee:[true]
+    });
   }
 
   getTontines(){
@@ -272,4 +302,22 @@ handleDetail(item: any)
     this.router.navigate(['/tontine-detail/'+item.id]);
   }
 }
+
+cancel() {
+  this.modal.dismiss(null, 'cancel');
+}
+
+confirm() {
+  console.log(this.formGroup.value);
+  this.modal.dismiss( 'confirm');
+}
+
+onWillDismiss(event: Event) {
+  const ev = event as CustomEvent<OverlayEventDetail<string>>;
+  if (ev.detail.role === 'confirm') {
+    // this.message = `Hello, ${ev.detail.data}!`;
+    console.log(ev.detail.data);
+  }
+}
+
 }

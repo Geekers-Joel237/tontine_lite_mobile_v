@@ -49,7 +49,8 @@ export class LoginPage implements OnInit {
         console.log('Success');
         this.presentToast('top','Login Success','success');
 
-        this.router.navigate(['/tabs-menu']);
+        this.router.navigate(['/tabs-menu/tontines']);
+
 
       },(err)=>{
         console.log(this.formGroup.value);

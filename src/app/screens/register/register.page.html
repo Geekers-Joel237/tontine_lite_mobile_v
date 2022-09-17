@@ -30,27 +30,17 @@
               <ion-input formControlName="prenom" class="label-text"inputmode="text" placeholder="Votre Prenom"></ion-input>
               <ion-note slot="error" class="label-text" *ngIf="(prenom.dirty||prenom.touched)&& prenom.errors">champ prenom requis</ion-note>
             </ion-item>
-            <ion-item>
+            <!-- <ion-item>
               <ion-label position="stacked" class="label-text">Email</ion-label>
               <ion-input formControlName="email"class="label-text" type="email" inputmode="email" placeholder="Votre Email"></ion-input>
               <ion-note slot="error" class="label-text" *ngIf="(email.dirty||email.touched)&& email.errors">champ e-mail non valide</ion-note>
-            </ion-item>
+            </ion-item> -->
             <ion-item>
               <ion-label position="stacked" class="label-text">Pays</ion-label>
               <ion-select placeholder="Votre Pays"  class="label-text" formControlName="pays" (ionChange)="setCode($event)">
                 <ion-select-option  *ngFor="let item of countries">{{item.country}}</ion-select-option>
               </ion-select>
               <ion-note slot="error" class="label-text" *ngIf="(pays.dirty||pays.touched)&& pays.errors">champ pays requis</ion-note>
-            </ion-item>
-            <ion-item>
-              <ion-label position="stacked" class="label-text">Ville</ion-label>
-              <ion-input formControlName="ville" class="label-text"inputmode="text" placeholder="Votre Ville"></ion-input>
-              <ion-note slot="error" class="label-text" *ngIf="(ville.dirty||ville.touched)&& ville.errors">champ ville requis</ion-note>
-            </ion-item>
-            <ion-item>
-              <ion-label position="stacked" class="label-text">Adresse</ion-label>
-              <ion-input formControlName="adresse"class="label-text" inputmode="text" placeholder="Votre Adresse"></ion-input>
-              <ion-note slot="error" *ngIf="(adresse.dirty||adresse.touched)&& adresse.errors">champ adresse requis</ion-note>
             </ion-item>
             <ion-item>
               <ion-label position="stacked" class="label-text">Telephone</ion-label>
@@ -64,6 +54,17 @@
                 </ion-col>
               </ion-row>
             </ion-item>
+            <ion-item>
+              <ion-label position="stacked" class="label-text">Ville</ion-label>
+              <ion-input formControlName="ville" class="label-text"inputmode="text" placeholder="Votre Ville"></ion-input>
+              <ion-note slot="error" class="label-text" *ngIf="(ville.dirty||ville.touched)&& ville.errors">champ ville requis</ion-note>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked" class="label-text">Adresse</ion-label>
+              <ion-input formControlName="adresse"class="label-text" inputmode="text" placeholder="Votre Adresse"></ion-input>
+              <ion-note slot="error" *ngIf="(adresse.dirty||adresse.touched)&& adresse.errors">champ adresse requis</ion-note>
+            </ion-item>
+
             <ion-item>
               <ion-label position="stacked" class="label-text">Numero CNI</ion-label>
               <ion-input formControlName="cni" class="label-text" placeholder="Votre Numero CNI"></ion-input>

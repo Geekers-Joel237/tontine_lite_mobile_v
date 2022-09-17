@@ -49,6 +49,13 @@ postSearch(params: any): Observable<any>{
 
 }
 
+createNewTontine(params: any): Observable<any>{
+  return this.http.post<any>(environment.apiUrl+'/tontines',params);
+}
+
+sendFiles(params: any): Observable<any>{
+  return this.http.post<any>(environment.apiUrl+'/upload-file',params);
+}
 
 }
 

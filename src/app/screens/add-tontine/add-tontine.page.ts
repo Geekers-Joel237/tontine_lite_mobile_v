@@ -1,5 +1,8 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { TontinesService } from 'src/app/services/tontines.service';
 
 @Component({
   selector: 'app-add-tontine',
@@ -7,57 +10,108 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./add-tontine.page.scss'],
 })
 export class AddTontinePage implements OnInit {
-formGroup: FormGroup;
+  formGroup: FormGroup;
+  files = [];
+  currentUser = null;
+  user = null;
+
   constructor(
     private fb: FormBuilder,
+    private tontineService: TontinesService,
+    private router: Router,
+
 
   ) { }
 
 
-  get nom(){return this.formGroup.get('nom');}
+  get nomT(){return this.formGroup.get('nomT');}
 
-  get prenom(){return this.formGroup.get('prenom');}
-  get email(){return this.formGroup.get('email');}
+  get type(){return this.formGroup.get('type');}
+  get montantT(){return this.formGroup.get('montantT');}
 
-  get telephone(){return this.formGroup.get('telephone');}
-  get adresse(){return this.formGroup.get('adresse');}
+  get maxT(){return this.formGroup.get('maxT');}
+  get slogan(){return this.formGroup.get('slogan');}
 
-  get ville(){return this.formGroup.get('ville');}
+  get retard(){return this.formGroup.get('retard');}
 
-  get pays(){return this.formGroup.get('pays');}
-  get cni(){return this.formGroup.get('cni');}
+  get echec(){return this.formGroup.get('echec');}
+  get sanction(){return this.formGroup.get('sanction');}
 
-  get password(){return this.formGroup.get('password');}
-  get password2(){return this.formGroup.get('password2');}
+  get reglement(){return this.formGroup.get('reglement');}
+  get file(){return this.formGroup.get('file');}
 
   get check(){return this.formGroup.get('check');}
 
 
   ngOnInit() {
+    this.currentUser = JSON.parse(localStorage.getItem('user'));
+    console.log(this.currentUser);
+    if(!this.currentUser)
+      {this.router.navigate(['/login']);
+      return;
+    }else{
+      this.user = this.currentUser.user;
+      this.syncForm();
+    }
+
+
+      // check:[false,Validators.required]
+
+
+
+
+  }
+
+  syncForm(){
     this.formGroup = this.fb.group({
-      nom:['',Validators.compose([
+      nomT:['',Validators.compose([
         Validators.required,Validators.minLength(3)
       ])
 
       ],
-      prenom:['',Validators.required],
-      email:['',Validators.compose([
-        Validators.required,Validators.email
+      type:['',Validators.required],
+      montantT:['',Validators.compose([
+        Validators.required
       ])],
-      password:['',Validators.compose([
-        Validators.required,Validators.minLength(8)
+      reglement:['',Validators.compose([
+        Validators.required,Validators.minLength(25)
       ])],
-      telephone:['',Validators.required],
-      adresse:['',Validators.required],
-      ville:['',Validators.required],
-      pays:['',Validators.required],
-      cni:['',Validators.required],
-      password2:['',Validators.required],
-      check:[false,Validators.required]
-
-
+      maxT:['',Validators.required],
+      slogan:['',Validators.required],
+      retard:['',Validators.required],
+      echec:['',Validators.required],
+      sanction:['',Validators.required],
+      file:[''],
+      user_id:this.user.id,
     });
 
+  }
 
+
+  onSubmit(){
+    if(this.formGroup.invalid){
+      console.log('invalid form');
+    }else{
+      console.log(this.formGroup.value);
+      this.tontineService.createNewTontine(this.formGroup.value).subscribe((data)=>{
+        console.log(data);
+        if(this.files.length > 0){
+          this.tontineService.sendFiles({
+            file:this.files[0][0],
+            tontine_id: data.data.id
+          }).subscribe(
+            (val)=>console.log(val),
+            (err)=>console.log(err)
+          );
+        }
+      },(err)=>{
+        console.log(err);
+      });
+    }
+  }
+
+  getFiles($ev){
+      this.files.push($ev.target.files);
+      console.log(this.files[0][0]);
   }
 }

@@ -24,7 +24,7 @@
        <ion-chip style="padding:0;border-radius:20%" color="primary">
         <ion-icon name="options-outline" color="primary" size="large" style="text-align:center;margin-right:5px"></ion-icon>
        </ion-chip>
-       <ion-chip (click)="openModal()">
+       <ion-chip id="open-modal">
        <ion-text>Filtres</ion-text>
        <ion-badge color="danger" style="margin-left:2px"></ion-badge>
        <ion-icon name="chevron-down-outline"></ion-icon>
@@ -35,7 +35,7 @@
       </ion-segment>
     </ion-col>
   </ion-row>
-  <ion-card  class="ion-no-border" *ngFor="let item of tontines;let i = index;" (click)="handleDetail(item)">
+  <ion-card  class="ion-no-border" *ngFor="let item of tontines;let i = index;">
 <!-- <div [ngClass]="'success'? demande.tontine_id === item.id : ''"> -->
       <ion-row>
         <ion-col size="9">
@@ -91,4 +91,62 @@
     <ion-label slot="end">Tontine</ion-label>
   </ion-fab-list>
 </ion-fab>
+
+<ion-modal trigger="open-modal" (willDismiss)="onWillDismiss($event)">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button (click)="cancel()">Annuler</ion-button>
+        </ion-buttons>
+        <!-- <ion-title>Welcome</ion-title> -->
+        <ion-buttons slot="end">
+          <ion-button (click)="confirm()" [strong]="true">Confirmer</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <form [formGroup]="formGroup">
+        <ion-item>
+          <ion-label position="stacked">Nom Tontine</ion-label>
+          <ion-input type="text" formControlName="nomT" placeholder="Nom Tontine"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-col size="6">
+              <ion-label>Fermee</ion-label>
+              <ion-checkbox formControlName="fermee">
+            </ion-checkbox>
+            </ion-col>
+            <ion-col size="6">
+              <ion-label>Ouverte</ion-label>
+              <ion-checkbox formControlName="ouverte">
+            </ion-checkbox>
+            </ion-col>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Membres</ion-label>
+          <ion-row>
+            <ion-col size="6">
+          <ion-input type="number" formControlName="membreMin" placeholder="Min" min="1" ></ion-input>
+            </ion-col>
+            <ion-col size="6">
+          <ion-input type="number" formControlName="membreMax" placeholder="Max" min="1" ></ion-input>
+            </ion-col>
+          </ion-row>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Montant</ion-label>
+          <ion-row>
+            <ion-col size="6">
+          <ion-input type="number"formControlName="montantMin" placeholder="Min" min="1" ></ion-input>
+            </ion-col>
+            <ion-col size="6">
+          <ion-input type="number"formControlName="montantMax" placeholder="Max" min="1" ></ion-input>
+            </ion-col>
+          </ion-row>
+        </ion-item>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>
 </ion-content>

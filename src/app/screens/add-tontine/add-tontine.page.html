@@ -2,10 +2,10 @@
   <ion-toolbar color="primary">
     <ion-row >
       <ion-col size="3">
-        <ion-icon name="arrow-back-outline" size="large" [routerLink]="['/tabs-menu/tontines']"></ion-icon>
+        <ion-icon name="arrow-back-outline" size="medium" [routerLink]="['/tabs-menu/tontines']"></ion-icon>
       </ion-col>
       <ion-col size="6">
-          <ion-title color="light" class="text-title ion-text-center ion-text-capitalize">Tontine Lite</ion-title>
+        <ion-title color="light" class="text-title ion-text-center ion-text-capitalize">Tontine Lite</ion-title>
       </ion-col>
       <ion-col size="3" >
       </ion-col>
@@ -21,81 +21,67 @@
         <form [formGroup]="formGroup" >
           <ion-item>
             <ion-label position="stacked" class="label-text">Nom Tontine</ion-label>
-            <ion-input formControlName="nom"class="label-text" inputmode="text"placeholder="Votre Nom"></ion-input>
-            <ion-note slot="error" class="label-text" *ngIf="(nom.dirty||nom.touched)&& nom.errors">champ nom requis</ion-note>
+            <ion-input formControlName="nomT" class="label-text" inputmode="text"placeholder="nom Tontine"></ion-input>
+            <ion-note slot="error" class="label-text" *ngIf="(nomT.dirty||nomT.touched)&& nomT.errors">champ nom requis</ion-note>
           </ion-item>
           <ion-item>
-            <ion-label position="stacked" class="label-text">Type</ion-label>
-            <ion-input formControlName="prenom" class="label-text"inputmode="text" placeholder="Votre Prenom"></ion-input>
-            <ion-note slot="error" class="label-text" *ngIf="(prenom.dirty||prenom.touched)&& prenom.errors">champ prenom requis</ion-note>
-          </ion-item>
-          <ion-item>
-            <ion-label position="stacked" class="label-text">Montant</ion-label>
-            <ion-input formControlName="email"class="label-text" type="email" inputmode="email" placeholder="Votre Email"></ion-input>
-            <ion-note slot="error" class="label-text" *ngIf="(email.dirty||email.touched)&& email.errors">champ e-mail non valide</ion-note>
-          </ion-item>
-          <ion-item>
-            <ion-label position="stacked" class="label-text">Effectif Max</ion-label>
-            <ion-select placeholder="Votre Pays"  class="label-text" formControlName="pays" (ionChange)="setCode($event)">
-              <ion-select-option  *ngFor="let item of countries">{{item.country}}</ion-select-option>
+            <ion-label position="stacked" class="label-text">Type Tontine</ion-label>
+            <ion-select placeholder="Type"  class="label-text" formControlName="type" >
+              <ion-select-option value="Ouverte">Ouverte</ion-select-option>
+              <ion-select-option value="Fermee" >Fermee</ion-select-option>
             </ion-select>
-            <ion-note slot="error" class="label-text" *ngIf="(pays.dirty||pays.touched)&& pays.errors">champ pays requis</ion-note>
+            <ion-note slot="error" class="label-text" *ngIf="(type.dirty||type.touched)&& type.errors">champ type requis</ion-note>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked" class="label-text">Montant Cotisation</ion-label>
+            <ion-input formControlName="montantT" class="label-text" type="number" min="1" inputmode="tel" placeholder="montant Cotisation"></ion-input>
+            <ion-note slot="error" class="label-text" *ngIf="(montantT.dirty||montantT.touched)&& montantT.errors">champ montant requis</ion-note>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked" class="label-text">Effectif Maximal</ion-label>
+            <ion-input formControlName="maxT" class="label-text" type="number" min="1" inputmode="tel" placeholder="Effectif Maximal"></ion-input>
+
+            <ion-note slot="error" class="label-text" *ngIf="(maxT.dirty||maxT.touched)&& maxT.errors">champ max requis</ion-note>
           </ion-item>
           <ion-item>
             <ion-label position="stacked" class="label-text">Slogan</ion-label>
-            <ion-input formControlName="ville" class="label-text"inputmode="text" placeholder="Votre Ville"></ion-input>
-            <ion-note slot="error" class="label-text" *ngIf="(ville.dirty||ville.touched)&& ville.errors">champ ville requis</ion-note>
+            <ion-input formControlName="slogan" class="label-text" inputmode="text" placeholder="Votre Slogan"></ion-input>
+            <ion-note slot="error" class="label-text" *ngIf="(slogan.dirty||slogan.touched)&& slogan.errors">champ slogan requis</ion-note>
           </ion-item>
           <ion-item>
             <ion-label position="stacked" class="label-text">Retard</ion-label>
-            <ion-input formControlName="adresse"class="label-text" inputmode="text" placeholder="Votre Adresse"></ion-input>
-            <ion-note slot="error" *ngIf="(adresse.dirty||adresse.touched)&& adresse.errors">champ adresse requis</ion-note>
+            <ion-input formControlName="retard"class="label-text" min="1" type="number" inputmode="tel" placeholder="Montant Retard"></ion-input>
+            <ion-note slot="error" class="label-text" *ngIf="(retard.dirty||retard.touched)&& retard.errors">champ retard requis</ion-note>
           </ion-item>
-          <!-- <ion-item>
-            <ion-label position="stacked" class="label-text">Echecs</ion-label>
-            <ion-row>
-              <ion-col size="3" class="ion-text-start">
-                <ion-note class="label-text">+{{code}}</ion-note>
-              </ion-col>
-              <ion-col size="9">
-                <ion-input formControlName="telephone" class="label-text" type="tel" ic;ldj;dhulgdnputmode="tel" placeholder="Telephone"></ion-input>
-                <ion-note class="label-text" slot="error" *ngIf="(telephone.dirty||telephone.touched)&& telephone.errors">champ telephone requis</ion-note>
-              </ion-col>
-            </ion-row>
-          </ion-item> -->
           <ion-item>
-            <ion-label position="stacked" class="label-text">Sanction</ion-label>
-            <ion-input formControlName="cni" class="label-text" placeholder="Votre Numero CNI"></ion-input>
-            <ion-note slot="error" class="label-text" *ngIf="(cni.dirty||cni.touched)&& cni.errors">champ numCni requis</ion-note>
+            <ion-label position="stacked" class="label-text">Echec</ion-label>
+            <ion-input formControlName="echec"class="label-text" min="1" type="number" inputmode="tel" placeholder="Montant echec"></ion-input>
+            <ion-note slot="error" class="label-text" *ngIf="(echec.dirty||echec.touched)&& echec.errors">champ echec requis</ion-note>
           </ion-item>
           <ion-item>
             <ion-label position="stacked" class="label-text">Sanction</ion-label>
-            <ion-input formControlName="cni" class="label-text" placeholder="Votre Numero CNI"></ion-input>
-            <ion-note slot="error" class="label-text" *ngIf="(cni.dirty||cni.touched)&& cni.errors">champ numCni requis</ion-note>
+            <ion-input formControlName="sanction"class="label-text" min="1" type="number" inputmode="tel" placeholder="Montant sanction"></ion-input>
+            <ion-note slot="error" class="label-text" *ngIf="(sanction.dirty||sanction.touched)&& sanction.errors">champ sanction requis</ion-note>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked" class="label-text">Reglement</ion-label>
+            <ion-textarea placeholder="Reglement" rows="6" cols="20" class="label-text" formControlName="reglement"></ion-textarea>
+            <ion-note slot="error" class="label-text" *ngIf="(reglement.dirty||reglement.touched)&& reglement.errors">champ reglement requis</ion-note>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked" class="label-text">Joindre un fichier</ion-label>
+            <ion-input formControlName="file"class="label-text" type="file" placeholder="Joindre un fichier" (change)="getFiles($event)"></ion-input>
+            <ion-note slot="error" class="label-text" *ngIf="(file.dirty||file.touched)&& file.errors">champ file requis</ion-note>
           </ion-item>
 
-          <ion-item style="position:relative">
-            <ion-label position="stacked" class="label-text" >Mot de passe</ion-label>
-           <ion-row style="position: relative;">
-            <ion-col size="10">
-              <ion-input [type]="password_input_type" class="label-text" placeholder="Mot De Passe" formControlName="password"></ion-input>
+          <ion-row class="ion-justify-content-end">
+            <ion-col class="ion-align-self-end">
+              <ion-button expand="block" (click)="onSubmit()" class="ion-text-capitalize" >Creer</ion-button>
             </ion-col>
-              <ion-icon class="center-right"  name="eye-off-outline" *ngIf="password_input_type==='password'" (click)="changePassInputType()"></ion-icon>
-              <ion-icon class="center-right"  name="eye-outline" *ngIf="password_input_type==='text'" (click)="changePassInputType()"></ion-icon>
-           </ion-row>
-            <ion-note class="label-text" slot="error" *ngIf="(password.dirty||password.touched)&& password.errors">invalid password</ion-note>
-          </ion-item>
-          <ion-item>
-            <ion-label position="stacked" class="label-text" >Confirmer Mot de passe</ion-label>
-            <ion-input formControlName="password2" class="label-text" type="password" clear-input="true" placeholder="Confirmer Mot de Passe"></ion-input>
-            <ion-note slot="error" class="label-text" *ngIf="(password2.dirty||password2.touched)&& password2.errors">champ  requis</ion-note>
-          </ion-item>
-          <ion-item>
-            <ion-label class="label-text">J'accepte les <a>termes et conditions</a></ion-label>
-            <ion-checkbox formControlName="check" slot="end" ></ion-checkbox>
-            <ion-note slot="error" class="label-text" *ngIf="(check.dirty||check.touched)&& check.errors">champ  requis</ion-note>
-
-          </ion-item>
+          </ion-row>
+          <!-- <ion-row>
+            <ion-button expand="full" (click)="onSubmit()" class="ion-text-capitalize" >Creer</ion-button>
+          </ion-row> -->
         </form>
       </ion-card-content>
     </ion-card>

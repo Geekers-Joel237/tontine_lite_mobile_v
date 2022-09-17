@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { DemandesService } from 'src/app/services/demandes.service';
 import { TontinesService } from 'src/app/services/tontines.service';
 import { ActionSheetController } from '@ionic/angular';
+import { IonModal } from '@ionic/angular';
+import { OverlayEventDetail } from '@ionic/core/components';
 
 @Component({
   selector: 'app-demandes',
@@ -10,6 +12,8 @@ import { ActionSheetController } from '@ionic/angular';
   styleUrls: ['./demandes.page.scss'],
 })
 export class DemandesPage implements OnInit {
+  @ViewChild(IonModal) modal: IonModal;
+
   currentUser = null;
   demandes = null;
   tontines = null;
@@ -17,6 +21,8 @@ export class DemandesPage implements OnInit {
   current = true;
   mesTontines = null;
   ownerDemandes = null;
+  message = 'This modal example uses triggers to automatically open a modal when the button is clicked.';
+  name: string;
 
   constructor(
   private router: Router,
@@ -127,4 +133,25 @@ export class DemandesPage implements OnInit {
     const { role, data } = await actionSheet.onDidDismiss();
     console.log('onDidDismiss resolved with role and data', role, data);
   }
+
+  cancel() {
+    this.modal.dismiss(null, 'cancel');
+  }
+
+  confirm() {
+    this.modal.dismiss(this.name, 'confirm');
+  }
+
+  onWillDismiss(event: Event) {
+    const ev = event as CustomEvent<OverlayEventDetail<string>>;
+    if (ev.detail.role === 'confirm') {
+      this.message = `Hello, ${ev.detail.data}!`;
+    }
+  }
+
+goToListDemandes(item: any){
+  localStorage.setItem('currentTontine',JSON.stringify(item));
+this.router.navigate(['/demandes-detail']);
+}
+
 }
