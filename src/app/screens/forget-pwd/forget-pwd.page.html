@@ -13,7 +13,6 @@
       <ion-col >
         <div class="ion-text-center ion-text-capitalize text-color">
           <h2>mot de passe oublie </h2>
-          <!-- <h5>Entrer votre Telephone pour reinitialiser votre mot de passe </h5> -->
         </div>
       </ion-col>
     </ion-row>
@@ -27,27 +26,16 @@
               <ion-note class="label-text" slot="error" *ngIf="(telephone.dirty||telephone.touched)&& telephone.errors">champ telephone requis</ion-note>
             </ion-item>
           </form>
-          <!-- <ion-row>
-            <div class="ion-text-center ion-text-uppercase">
-              <h2>Ou</h2>
-            </div>
-          </ion-row>
-          <form [formGroup]="formGroup2" >
-            <ion-item>
-              <ion-label position="stacked" class="label-text">Email</ion-label>
-              <ion-input formControlName="email" class="label-text" type="email" inputmode="email" placeholder="Email"></ion-input>
-              <ion-note class="label-text" slot="error" *ngIf="(email.dirty||email.touched)&& email.errors">champ email requis</ion-note>
-            </ion-item>
-          </form> -->
+
         </ion-card-content>
       </ion-card>
     </ion-row>
 
-    <ion-row class="ion-justify-content-end">
-      <ion-col class="ion-align-self-end">
-        <ion-button expand="block" (click)="onSubmit()" class="ion-text-capitalize" >Reinitialiser</ion-button>
-      </ion-col>
-    </ion-row>
+      <ion-row class="ion-justify-content-end">
+        <ion-col class="ion-align-self-end">
+          <ion-button expand="block" (click)="onSubmit()" class="ion-text-capitalize" >Reinitialiser</ion-button>
+        </ion-col>
+      </ion-row>
   </ion-grid>
   </ion-content>
 

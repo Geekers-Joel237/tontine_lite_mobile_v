@@ -1,0 +1,199 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-row >
+      <ion-col size="3">
+        <ion-icon name="arrow-back-outline" size="medium" (click)="myBackButton()"></ion-icon>
+      </ion-col>
+      <ion-col size="6">
+          <ion-title color="light" class="text-title ion-text-center ion-text-capitalize">Detail Exercice</ion-title>
+      </ion-col>
+      <ion-col size="3" class="ion-text-end ion-padding-end" >
+        <ion-icon id="click-trigger" name="ellipsis-vertical-outline"></ion-icon>
+        <ion-popover trigger="click-trigger" triggerAction="click" >
+          <ng-template class="custom-popover">
+            <ion-content class="ion-padding " >
+              <ion-list>
+                <ion-item lines="none" (click)="updateSeance(id)">
+                  <ion-text slot="start">
+                    Modifier
+                  </ion-text>
+                  <ion-icon slot="end" name="create-outline" ></ion-icon>
+                </ion-item >
+                <ion-item lines="none" (click)="deleteSeance(id)">
+                  <ion-text slot="start">
+                    Supprimer
+                  </ion-text>
+                  <ion-icon slot="end" name="trash-outline"></ion-icon>
+                </ion-item>
+              </ion-list>
+            </ion-content>
+          </ng-template>
+        </ion-popover>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="secondary">
+  <ion-grid *ngIf="currentExercice">
+    <ion-grid >
+      <ion-card class="ion-no-border ion-padding custom-bottom">
+        <ion-row>
+          <ion-col size="6" class="custom-center">
+              <ion-text class="custom" >Exercice 1</ion-text>
+          </ion-col>
+          <ion-col size="2"></ion-col>
+          <ion-col size="4">
+            <ion-note color="success" *ngIf="currentExercice.statusE">
+              En cours
+            </ion-note>
+            <ion-note color="danger" *ngIf="!currentExercice.statusE">
+              Termine
+            </ion-note>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="6">
+            <ion-text *ngIf="currentExercice.membres">
+              {{currentExercice.membres.length}} Membres
+            </ion-text>
+          </ion-col>
+          <ion-col size="2">
+
+          </ion-col>
+          <ion-col size="4">
+            {{currentExercice.created_at | date:'dd/MM/yyyy'}}
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="6">
+            <ion-row>
+              {{currentExercice.duree +' '+currentExercice.periodicite}}
+            </ion-row>
+          </ion-col>
+
+        </ion-row>
+
+      </ion-card>
+    </ion-grid>
+
+    <ion-row>
+      <ion-col size="6">
+        <ion-card color="warning" class="ion-padding ion-text-center">
+          <ion-row>
+            <ion-text class="sub-card">
+              Retards Payes
+            </ion-text>
+          </ion-row>
+          <ion-row>
+            <ion-text class="sub-card">
+              <!-- {{currentExercice.retardsPayes.length * currentExercice.r}} XAF -->
+
+            </ion-text>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+      <ion-col size="6">
+        <ion-card color="danger" class="ion-padding ion-text-center">
+          <ion-row>
+            <ion-text class="sub-card">
+              Echecs Payes
+            </ion-text>
+          </ion-row>
+          <ion-row>
+            <ion-text class="sub-card">
+              1000
+            </ion-text>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="6">
+        <ion-card color="warning" class="ion-padding ion-text-center">
+          <ion-row>
+            <ion-text class="sub-card">
+              Retards Non Payes
+            </ion-text>
+          </ion-row>
+          <ion-row>
+            <ion-text class="sub-card">
+              1000
+            </ion-text>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+      <ion-col size="6">
+        <ion-card color="danger" class="ion-padding ion-text-center">
+          <ion-row>
+            <ion-text class="sub-card">
+              Echecs Non Payes
+            </ion-text>
+          </ion-row>
+          <ion-row>
+            <ion-text class="sub-card">
+              1000
+            </ion-text>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="3"></ion-col>
+      <ion-col size="6">
+        <ion-card color="success" class="ion-padding ion-text-center">
+          <ion-row>
+            <ion-text class="sub-card">
+              Cotisations
+            </ion-text>
+          </ion-row>
+          <ion-row>
+            <ion-text class="sub-card">
+              1000
+            </ion-text>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+      <ion-col size="3"></ion-col>
+    </ion-row>
+
+    <ion-row class="ion-padding" >
+      <ion-col size="9">
+        <ion-text color="dark" >
+          Toutes les seances
+        </ion-text>
+      </ion-col>
+      <ion-col size="3" class="ion-text-end">
+        <ion-icon color="dark" size="large" name="ellipsis-horizontal-outline" ></ion-icon>
+      </ion-col>
+    </ion-row>
+
+    <ion-grid *ngIf="currentExercice.seances">
+      <ion-card class="ion-padding" *ngFor="let item of currentExercice.seances;let i = index;">
+        <ion-row>
+          <ion-col size="4">
+            Seance {{i+1}}
+          </ion-col>
+          <ion-col size="4"></ion-col>
+          <ion-col size="4">
+            <ion-text>
+              {{item.statutS}}
+            </ion-text>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="4">
+            {{item.created_at | date:'dd/MM/yyyy'}}
+          </ion-col>
+          <ion-col size="4"></ion-col>
+          <ion-col size="4">
+            <ion-text>
+              Beneficiaires
+            </ion-text>
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+          </ion-col>
+        </ion-row>
+      </ion-card>
+    </ion-grid>
+  </ion-grid>
+</ion-content>

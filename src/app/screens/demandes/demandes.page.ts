@@ -21,6 +21,7 @@ export class DemandesPage implements OnInit {
   current = true;
   mesTontines = null;
   ownerDemandes = null;
+  currentSegment = 'tontines';
   message = 'This modal example uses triggers to automatically open a modal when the button is clicked.';
   name: string;
 
@@ -48,32 +49,31 @@ export class DemandesPage implements OnInit {
   }
 
   getUserDemandes(userId: number){
-    if(this.user.role === 'membre'){
       this.demandeService.getDemandeTontineByUserId(userId)
       .subscribe((data)=>{
         console.log(data);
         this.demandes =  data.data;
       });
-    }else{
       this.tontineService.getUserTontines(this.user.id).subscribe(
         (data)=>{
-          this.tontines =[...new Set(data.data)]
-          .filter((tontine: any)=>tontine.type === 'Ouverte');
+          this.tontines =[...new Set(data.data)];
           console.log(this.tontines);
         },
         (err)=>{
           console.log(err);
         }
       );
-    }
   }
 
   segmentChanged(ev: any) {
-    // console.log('Segment changed', ev);
-    this.current = !this.current;
-    if(this.current) {this.getUserDemandes(this.user.id);}
-    else {this.getTontinesUser(this.user.id);}
-    console.log(this.current);
+    this.currentSegment =  ev.detail.value;
+    if(this.currentSegment === 'tontines'){
+      this.getUserDemandes(this.user.id);
+    }else if(this.currentSegment === 'demandes'){
+      this.getUserDemandes(this.user.id);
+    } else if(this.currentSegment === 'adhesions'){
+      this.getTontinesUser(this.user.id);
+    }
   }
 
   cancelDemande(idDem: number,idUser: number){
@@ -152,6 +152,10 @@ export class DemandesPage implements OnInit {
 goToListDemandes(item: any){
   localStorage.setItem('currentTontine',JSON.stringify(item));
 this.router.navigate(['/demandes-detail']);
+}
+
+goToDetail(id: number){
+  this.router.navigate(['/tontine-detail/'+id]);
 }
 
 }

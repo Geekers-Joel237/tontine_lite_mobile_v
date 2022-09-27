@@ -1,71 +1,332 @@
 <ion-header class="ion-no-border">
   <ion-toolbar color="primary">
     <ion-row >
-      <ion-col size="3">
+      <ion-col size="2">
         <ion-icon name="arrow-back-outline" size="medium" [routerLink]="['/tabs-menu/demandes']" routerLinkActive="router-link-active" ></ion-icon>
       </ion-col>
-      <ion-col size="6">
-          <ion-title color="light" class="text-title ion-text-center ion-text-capitalize">Tontine Lite</ion-title>
+      <ion-col size="8">
+          <ion-title color="light" class="text-title ion-text-center ion-text-capitalize">Detail Tontine</ion-title>
       </ion-col>
-      <ion-col size="3" >
+      <ion-col size="2" >
       </ion-col>
     </ion-row>
   </ion-toolbar>
 </ion-header>
 
-<ion-content color="secondary">
-<ion-grid>
+<ion-content color="secondary" >
+<ion-grid *ngIf="currentTontine">
   <ion-grid>
-    <ion-card class="ion-no-border">
+    <ion-card class="ion-no-border custom-bottom ion-padding">
       <ion-row>
-        <ion-col size="6">
-          <ion-row>
-            <ion-text>Tontine</ion-text>
-          </ion-row>
-          <ion-row>Nom Tontine</ion-row>
+        <ion-col size="6" class="custom-center">
+            <ion-text class="custom" >{{currentTontine.nomT}}</ion-text>
         </ion-col>
         <ion-col size="3"></ion-col>
         <ion-col size="3">
-          <ion-button >
+          <ion-button size="medium" id="click-trigger" *ngIf="currentTontine.user_id === currentUser.user.id">
             <ion-icon  name="add" size="medium" ></ion-icon>
+            <ion-popover trigger="click-trigger" triggerAction="click" >
+              <ng-template class="custom-popover">
+                <ion-content class="ion-padding " >
+                  <ion-list>
+                    <ion-item lines="none" (click)="updateTontine(currentTontine.id)">
+                      <ion-text slot="start">
+                        Modifier
+                      </ion-text>
+                      <ion-icon slot="end" name="create-outline"></ion-icon>
+                    </ion-item >
+                    <ion-item lines="none" (click)="deleteTontine(currentTontine.id)">
+                      <ion-text slot="start">
+                        Supprimer
+                      </ion-text>
+                      <ion-icon slot="end" name="trash-outline"></ion-icon>
+                    </ion-item>
+                    <ion-item lines="none">
+                      <ion-text slot="start">
+                        Reglement
+                      </ion-text>
+                      <ion-icon slot="end" name="attach-outline"></ion-icon>
+                    </ion-item>
+                    <ion-item lines="none">
+                      <ion-text slot="start">
+                        Parametres
+                      </ion-text>
+                      <ion-icon slot="end" name="build-outline"></ion-icon>
+                    </ion-item>
+
+                  </ion-list>
+                </ion-content>
+              </ng-template>
+            </ion-popover>
           </ion-button>
         </ion-col>
       </ion-row>
+      <ion-row>
+        <ion-text>
+          {{currentTontine.membres.length+' membres'}}
+        </ion-text>
+      </ion-row>
+      <ion-row>
+        <ion-text>
+          {{currentTontine.created_at | date:'dd/MM/yyyy'}}
+        </ion-text>
+      </ion-row>
+      <!-- <ion-row>
+        <ion-text>
+          Frequence Tontine
+        </ion-text>
+      </ion-row> -->
     </ion-card>
   </ion-grid>
 
-  <!-- <ion-grid> -->
     <ion-row>
-      <ion-col size="5">
-        <ion-card>
-          <ion-row>
-            <ion-text>
-              Income
+      <ion-col size="6">
+        <ion-card color="warning" class="ion-padding ion-text-center" id="open-modal2">
+          <ion-row >
+            <ion-text class="sub-card " >
+             Retards
             </ion-text>
           </ion-row>
           <ion-row>
-            <ion-text>
-              555 XAF
+            <ion-text class="sub-card ">
+              {{currentTontine.retards.length * currentTontine.retard}} XAF
+            </ion-text>
+          </ion-row>
+        </ion-card>
+        <ion-modal #modal trigger="open-modal2" [initialBreakpoint]="0.5" [breakpoints]="[0, 0.25, 0.5, 0.75]">
+          <ng-template>
+            <ion-content>
+              <ion-searchbar placeholder="Search" (click)="modal.setCurrentBreakpoint(0.75)" [(ngModel)]="searchInput">
+              </ion-searchbar>
+              <ion-list>
+                <ion-item *ngFor="let item of currentTontine.retards | filter:searchInput ">
+                  <ion-avatar slot="start">
+                    <ion-img src="https://i.pravatar.cc/300?u=b"></ion-img>
+                  </ion-avatar>
+                  <ion-label>
+                    <h2>{{item.nom+' '+item.prenom}}</h2>
+                    <p>Depuis le {{item.created_at | date:'dd/MM/yyyy'}}</p>
+                  </ion-label>
+                  <ion-note slot="end" *ngIf="!item.statut" color="danger">
+                    <p >{{currentTontine.retard}} XAF</p>
+                  </ion-note>
+                  <ion-note slot="end" *ngIf="item.statut" color="warning">
+                    <p >{{currentTontine.retard}} XAF</p>
+                  </ion-note>
+                </ion-item>
+                </ion-list>
+            </ion-content>
+          </ng-template>
+        </ion-modal>
+      </ion-col>
+      <ion-col size="6">
+        <ion-card color="danger" class="ion-padding  ion-text-center">
+          <ion-row>
+            <ion-text class="sub-card ">
+              Echecs
+            </ion-text>
+          </ion-row>
+          <ion-row>
+            <ion-text class="sub-card ">
+              {{currentTontine.echecs.length * currentTontine.echec}} XAF
             </ion-text>
           </ion-row>
         </ion-card>
       </ion-col>
-      <ion-col size="2"></ion-col>
-      <ion-col size="5"></ion-col>
+      <ion-col size="6">
+        <ion-card color="success" class="ion-padding ion-text-center">
+          <ion-row>
+            <ion-text class="sub-card ">
+              Cotisations
+            </ion-text>
+          </ion-row>
+          <ion-row>
+            <ion-text class="sub-card ">
+              {{currentTontine.cotisations.length}} XAF
+            </ion-text>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+      <!-- <ion-col size="2">
+      </ion-col> -->
+      <ion-col size="6">
+        <ion-card color="success" class="ion-padding ion-text-center">
+          <ion-row>
+            <ion-text class="sub-card ">
+              Membres
+            </ion-text>
+          </ion-row>
+          <ion-row>
+            <ion-text class="sub-card ">
+              {{currentTontine.membres.length}}
+            </ion-text>
+          </ion-row>
+        </ion-card>
+      </ion-col>
     </ion-row>
 
-  <!-- </ion-grid> -->
+    <ion-row class="ion-padding">
+      <ion-col size="9">
+        <ion-text color="dark">
+          Tous les exercices
+        </ion-text>
+      </ion-col>
+      <ion-col size="3" class="ion-text-end">
+        <ion-icon color="dark" *ngIf="currentTontine.user_id === currentUser.user.id"  name="add-circle-outline" size="large" (click)="presentExerciceModal()"></ion-icon>
+      </ion-col>
+    </ion-row>
+    <ion-grid *ngIf="currentTontine.exercices">
+      <ion-card class="ion-padding" *ngFor="let item of currentTontine.exercices;let i = index;" (click)="goToExercice(item.id)">
+        <ion-row>
+          <ion-col size="6">
+            <ion-text>Exercice No {{i+1}}</ion-text>
+          </ion-col>
+          <ion-col size="6" class="ion-text-end">
+            <ion-text color="success" *ngIf="item.statusE ">
+              En Cours
+            </ion-text>
+            <ion-text color="danger" *ngIf="!item.statusE">
+              Termine
+            </ion-text>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="6">
+            <ion-text>Membres</ion-text>
+          </ion-col>
+          <ion-col size="6" class="ion-text-end">
+            <ion-text>
+              {{item.duree + ' ' +item.periodicite}}
+            </ion-text>
+          </ion-col>
+        </ion-row>
+        <!-- <ion-row>
+          <ion-col size="6" class="ion-text-start">
+            <ion-text>{{item.dateFinE}}</ion-text>
+          </ion-col>
+          <ion-col size="6" class="ion-text-end">
+            <ion-text>
+              {{item.dateDebutE}}
+            </ion-text>
+          </ion-col>
+        </ion-row> -->
+      </ion-card>
+      <ion-card>
+
+      </ion-card>
+    </ion-grid>
+    <ion-row class="ion-padding">
+      <ion-col size="9">
+        <ion-text color="dark" *ngIf="currentTontine.membres.length > 0">
+          Tous les membres
+        </ion-text>
+      </ion-col>
+      <ion-col size="3" class="ion-text-end">
+        <ion-icon color="dark" id="open-modal1" name="ellipsis-horizontal-outline" size="large" *ngIf="currentTontine.membres.length > 0"></ion-icon>
+
+        <ion-modal #modal trigger="open-modal1" [initialBreakpoint]="0.25" [breakpoints]="[0, 0.25, 0.5, 0.75]">
+          <ng-template>
+            <ion-content>
+              <ion-searchbar placeholder="Search" (click)="modal.setCurrentBreakpoint(0.75)" [(ngModel)]="searchInput">
+              </ion-searchbar>
+              <ion-list>
+                <ion-item *ngFor="let item of currentTontine.membres | filter:searchInput">
+                  <ion-avatar slot="start">
+                    <ion-img src="https://i.pravatar.cc/300?u=b"></ion-img>
+                  </ion-avatar>
+                  <ion-label>
+                    <h2>{{item.nom+' '+item.prenom}}</h2>
+                    <p>Depuis le {{item.created_at | date:'dd/MM/yyyy'}}</p>
+                  </ion-label>
+                  <ion-note slot="end" *ngIf="item.estActif" color="success">
+                    <p >Actif</p>
+                  </ion-note>
+                  <ion-note slot="end" *ngIf="!item.estActif" color="warning">
+                    <p >Suspendu</p>
+                  </ion-note>
+                </ion-item>
+                </ion-list>
+            </ion-content>
+          </ng-template>
+        </ion-modal>
+      </ion-col>
+    </ion-row>
+
+    <ion-grid>
+      <ion-card *ngIf="currentTontine.membres.length > 0">
+        <ion-list>
+          <ion-item *ngFor="let item of currentTontine.membres">
+            <ion-avatar slot="start">
+              <ion-img src="https://i.pravatar.cc/300?u=b"></ion-img>
+            </ion-avatar>
+            <ion-label>
+              <h2>{{item.nom+' '+item.prenom}}</h2>
+              <p>Depuis le {{item.created_at | date:'dd/MM/yyyy'}}</p>
+            </ion-label>
+            <ion-note slot="end" *ngIf="item.estActif" color="success">
+              <p >Actif</p>
+            </ion-note>
+            <ion-note slot="end" *ngIf="!item.estActif" color="warning">
+              <p >Suspendu</p>
+            </ion-note>
+          </ion-item>
+          </ion-list>
+      </ion-card>
+    </ion-grid>
+    <ion-row class="ion-padding" *ngIf="currentTontine.user_id === currentUser.user.id">
+      <ion-col size="9">
+        <ion-text color="dark" *ngIf="currentTontine.demandes.length > 0">
+          Toutes les demandes
+        </ion-text>
+      </ion-col>
+      <ion-col size="3" class="ion-text-end">
+        <ion-icon color="dark" size="large" name="ellipsis-horizontal-outline" *ngIf="currentTontine.demandes.length > 0"></ion-icon>
+      </ion-col>
+    </ion-row>
+
+    <ion-grid *ngIf="currentTontine.user_id === currentUser.user.id">
+      <ion-card  class="ion-no-border" *ngIf="currentTontine.demandes.length > 0">
+        <ion-list>
+          <div *ngFor="let item of currentTontine.demandes">
+            <ion-item>
+              <ion-avatar slot="start">
+                <ion-img src="https://i.pravatar.cc/300?u=a"></ion-img>
+              </ion-avatar>
+              <ion-label>
+                <h2>{{item.nom+' '+item.prenom}}</h2>
+                <p>Envoye le {{item.created_at | date:'dd/MM/yyyy'}}</p>
+              </ion-label>
+            </ion-item>
+            <ion-row class="ion-justify-content-between" *ngIf="!item.validation">
+              <ion-col size="6" class="ion-text-center" >
+                <ion-button  size="small" shape="round"
+                 fill="outline"
+                 color="danger"
+                 (click)="refuseDemande(item.id,item.user_id)"
+                 >Refuser</ion-button>
+              </ion-col>
+              <ion-col size="6" class="ion-text-center" >
+                <ion-button size="small" shape="round"
+                 fill="outline"
+                 color="success"
+                 (click)="acceptDemande(item.id,item.user_id)"
+                 >Accepter</ion-button>
+
+              </ion-col>
+            </ion-row>
+            <ion-row *ngIf="item.validation">
+              <ion-col class="ion-text-center">
+                <ion-text color="success">Valide</ion-text>
+              </ion-col>
+            </ion-row>
+          </div>
+        </ion-list>
+
+      <!-- <ion-row>
+      </ion-row> -->
+  </ion-card>
+    </ion-grid>
+
 </ion-grid>
-<ion-fab *ngIf="currentUser.user.role === 'admin'" vertical="bottom" horizontal="end" slot="fixed">
-  <ion-fab-button>
-    <ion-icon name="add"></ion-icon>
-  </ion-fab-button>
-  <ion-fab-list side="start">
-    <ion-fab-button>
-      <ion-icon name="calendar-number-outline" (click)="showActionSheet()"></ion-icon>
-      <!-- <ion-icon name="wallet-outline" [routerLink]="['/add-tontine']" routerLinkActive="router-link-active" ></ion-icon> -->
-    </ion-fab-button>
-    <ion-label slot="end">Exercice</ion-label>
-  </ion-fab-list>
-</ion-fab>
+
 </ion-content>

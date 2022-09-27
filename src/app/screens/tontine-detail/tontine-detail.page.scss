@@ -5,3 +5,27 @@
 .success{
   background-color: #2dd36f;
 }
+.custom{
+  position: absolute;
+  left:1%;
+}
+.custom-center
+{
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  position:relative;
+
+}
+
+.custom-bottom
+{
+  border-bottom: 2px solid #6236FF;
+}
+
+.sub-card{
+  text-align: center;
+  font-size: 9px;
+  width: 100%;
+  color: #fff;
+}

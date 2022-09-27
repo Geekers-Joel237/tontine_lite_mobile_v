@@ -2,7 +2,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { TontinesService } from 'src/app/services/tontines.service';
 import { ActionSheetController, IonModal } from '@ionic/angular';
-import { AlertController,ModalController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { OverlayEventDetail } from '@ionic/core/components';
@@ -32,7 +32,6 @@ export class TontinesPage implements OnInit {
     private alertController: AlertController,
     private toastController: ToastController,
     private router: Router,
-    private modalCtrl: ModalController,
     private fb: FormBuilder,
 
 
@@ -40,9 +39,7 @@ export class TontinesPage implements OnInit {
   ) { }
 
   get nomT(){return this.formGroup.get('nomT');}
-  get membreMin(){return this.formGroup.get('membreMin');}
   get membreMax(){return this.formGroup.get('membreMax');}
-  get montantMin(){return this.formGroup.get('montantMin');}
   get montantMax(){return this.formGroup.get('montantMax');}
   get ouverte(){return this.formGroup.get('ouverte');}
   get fermee(){return this.formGroup.get('fermee');}
@@ -66,20 +63,26 @@ export class TontinesPage implements OnInit {
     }
   }
 
+  ionViewWillEnter(){
+    this.getTontines();
+    console.log('ionViewWillEnter');
+  }
+
+  pinFormatter(value: number) {
+    return `${value}`;
+  }
+
   syncForm(){
     this.formGroup = this.fb.group({
       nomT:[''],
-      membreMin:[1],
-      membreMax:[''],
-      montantMin:[1],
-      montantMax:[''],
+      membreMax:[100],
+      montantMax:[100000],
       ouverte:[true],
       fermee:[true]
     });
   }
 
   getTontines(){
-    if(this.user.role === 'membre'){
       this.tontineService.getAllTontines().subscribe(
         (data)=>{
           this.tontines = data.data;
@@ -89,58 +92,71 @@ export class TontinesPage implements OnInit {
           console.log(err);
         }
       );
-    }else{
-      this.tontineService.getUserTontines(this.user.id).subscribe(
-        (data)=>{
-          this.tontines = data.data;
-          console.log(this.tontines);
-        },
-        (err)=>{
-          console.log(err);
-        }
-      );
-    }
   }
 
 
   async presentActionSheet(item: any) {
-    const actionSheet = await this.actionSheetController.create({
-      header:item.nomT,
-      cssClass: 'my-custom-class',
-      buttons: [{
-        text: 'Reglement',
-        icon: 'document',
+    if(this.mesTontines && this.mesTontines.includes(item.id)){
+      this.presentToast('top','Tentative d\'integration deja faite','warning');
+    }else if(this.demandes && this.demandes.includes(item.id)){
+      this.presentToast('top','Tentative d\'integration deja faite','warning');
+    }
+    else{
+      if(item.user_id === this.currentUser.user.id){
+        console.log('on partage plutot');
+        this.share(item);
+      }else{
+        const actionSheet = await this.actionSheetController.create({
+          header:item.nomT,
+          cssClass: 'my-custom-class',
+          buttons: [{
+            text: 'Reglement',
+            icon: 'document',
 
-        handler: () => {
-          this.presentAlert2(item);
+            handler: () => {
+                this.presentAlert2(item);
+            }
+          }, {
+            text: item.user_id === this.currentUser.user.id ? 'Partager' : 'Integrer' ,
+            icon: 'share',
+            handler: () => {
+              if(item.type === 'Fermee'){
 
-        }
-      }, {
-        text: this.currentUser.user.role === 'membre' ? 'Integrer' : 'Partager',
-        icon: 'share',
-        handler: () => {
-          if(item.type === 'Fermee'){
-            console.log('Fermee');
-            this.presentAlert(item);
-          }else{
-            console.log('Ouverte');
-            this.postDemande({user_id:this.currentUser.user.id,tontine_id:item.id,exercice_id:null});
-            this.getTontinesDemandesUser(this.currentUser.user.id,true);
-          }
-        }
-      }, {
-        text: 'Fermer',
-        icon: 'close',
-        role: 'cancel',
-        handler: () => {
-          console.log('Cancel clicked');
-        }
-      }]
-    });
-    await actionSheet.present();
+                const len = item.membres.length;
+                console.log('Fermee');
+                if( len <= item.maxT){
+                  console.log('on peut integrer');
+                  this.presentAlert(item);
+                }else{
+                  console.log('effectif atteint', item.membres.length);
+                  this.presentToast('top','Tontine Deja Pleine','warning');
+                }
+              }else{
+                console.log('Ouverte');
+                if(item.user_id !== this.currentUser.user.id){
+                  this.postDemande({user_id:this.currentUser.user.id,tontine_id:item.id,exercice_id:null});
+                  this.getTontinesDemandesUser(this.currentUser.user.id,true);
+                } else{
+                  this.presentToast('top','Vous etes deja membre','warning');
+                }
 
-    const { role, data } = await actionSheet.onDidDismiss();
-    console.log('onDidDismiss resolved with role and data', role, data);
+                }
+            }
+          }, {
+            text: 'Fermer',
+            icon: 'close',
+            role: 'cancel',
+            handler: () => {
+              console.log('Cancel clicked');
+            }
+          }]
+        });
+        await actionSheet.present();
+        const { role, data } = await actionSheet.onDidDismiss();
+        console.log('onDidDismiss resolved with role and data', role, data);
+      }
+    }
+
   }
 
   async presentAlert(item: any) {
@@ -174,9 +190,9 @@ export class TontinesPage implements OnInit {
                   this.getTontinesUser(this.user.id);
               },(err)=>{
                 console.log(err);
+              this.presentToast('top','Erreur Survenue','danger');
+
               });
-              // this.presentToast('top','Bienvenue','success');
-              // this.router.navigate(['/tabs-menu/demandes']);
             }else{
               this.presentToast('top','Code Errone','danger');
             }
@@ -222,28 +238,12 @@ export class TontinesPage implements OnInit {
     this.tontineService.postDemende(params).subscribe(data=>{
       console.log(data);
       this.presentToast('top','Demande Envoyee','success');
+      this.getTontinesDemandesUser(this.currentUser.user.id,true);
+
 
             });
   }
 
-
-  public async openModal(){
-    const modal = await this.modalCtrl.create({
-      component:'ModalCategoryPage',
-      componentProps:{
-        // selectedCategory:this.selectedCategory
-      },
-      breakpoints:[0,0.65],
-      initialBreakpoint:0.65,
-      animated:true,
-      handle:true
-    });
-    // modal.present();
-    // const {data,role } = await modal.onWillDismiss();
-    // if(role ==='confirm'){
-    //   this.selectedCategory=data;
-    // }
-  }
 
   refreshFilter(){
     this.getTontines();
@@ -315,9 +315,12 @@ confirm() {
 onWillDismiss(event: Event) {
   const ev = event as CustomEvent<OverlayEventDetail<string>>;
   if (ev.detail.role === 'confirm') {
-    // this.message = `Hello, ${ev.detail.data}!`;
     console.log(ev.detail.data);
   }
+}
+
+share(item: any){
+
 }
 
 }

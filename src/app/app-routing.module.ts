@@ -43,6 +43,22 @@ const routes: Routes = [
     path: 'demandes-detail',
     loadChildren: () => import('./screens/demandes-detail/demandes-detail.module').then( m => m.DemandesDetailPageModule)
   },
+  {
+    path: 'exercice-detail/:id',
+    loadChildren: () => import('./screens/exercice-detail/exercice-detail.module').then( m => m.ExerciceDetailPageModule)
+  },
+  {
+    path: 'seance-detail/:id',
+    loadChildren: () => import('./screens/seance-detail/seance-detail.module').then( m => m.SeanceDetailPageModule)
+  },
+  {
+    path: 'add-exercice',
+    loadChildren: () => import('./modalsPages/add-exercice/add-exercice.module').then( m => m.AddExercicePageModule)
+  },
+  {
+    path: 'update-tontine',
+    loadChildren: () => import('./modalsPages/update-tontine/update-tontine.module').then( m => m.UpdateTontinePageModule)
+  },
   // {
   //   path: 'tabs-menu/tontines',
   //   loadChildren: () => import('./screens/tontines/tontines.module').then( m => m.TontinesPageModule)

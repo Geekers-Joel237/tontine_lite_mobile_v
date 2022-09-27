@@ -1,0 +1,197 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-row >
+      <ion-col size="3">
+        <ion-icon name="arrow-back-outline" size="medium" [routerLink]="['/tabs-menu/demandes']" routerLinkActive="router-link-active" ></ion-icon>
+      </ion-col>
+      <ion-col size="6">
+          <ion-title color="light" class="text-title ion-text-center ion-text-capitalize">Detail Seance</ion-title>
+      </ion-col>
+      <ion-col size="3" class="ion-text-end ion-padding-end" >
+        <ion-icon id="click-trigger" name="ellipsis-vertical-outline"></ion-icon>
+        <ion-popover trigger="click-trigger" triggerAction="click" >
+          <ng-template class="custom-popover">
+            <ion-content class="ion-padding " >
+              <ion-list>
+                <ion-item lines="none" (click)="updateSeance(id)">
+                  <ion-text slot="start">
+                    Modifier
+                  </ion-text>
+                  <ion-icon slot="end" name="create-outline" ></ion-icon>
+                </ion-item >
+                <ion-item lines="none" (click)="deleteSeance(id)">
+                  <ion-text slot="start">
+                    Supprimer
+                  </ion-text>
+                  <ion-icon slot="end" name="trash-outline"></ion-icon>
+                </ion-item>
+              </ion-list>
+            </ion-content>
+          </ng-template>
+        </ion-popover>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="secondary">
+  <ion-grid>
+    <ion-grid *ngIf="currentSeance">
+      <ion-card class="ion-no-border ion-padding custom-bottom">
+        <ion-row>
+          <ion-col size="6" class="custom-center">
+              <ion-text class="custom" >Seance No 1</ion-text>
+          </ion-col>
+          <ion-col size="3"></ion-col>
+          <ion-col size="3">
+            <ion-note color="medium">
+              {{currentSeance.statutS ? 'En Cours' : 'Termine'}}
+            </ion-note>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-text>
+              {{currentSeance.created_at | date:'dd/MM/yyyy'}}
+            </ion-text>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="6">
+            <ion-row>
+              {{'Beneficiaires '}}
+              <ion-badge> {{currentSeance.beneficiaires.length}} </ion-badge>
+            </ion-row>
+            <ion-text *ngFor="let item of currentSeance.beneficiaires">
+              {{item.nom}} |
+            </ion-text>
+          </ion-col>
+          <ion-col size="3">
+
+          </ion-col>
+          <ion-col size="3" >
+            <ion-note >
+              15000 XAF
+            </ion-note>
+          </ion-col>
+        </ion-row>
+
+      </ion-card>
+    </ion-grid>
+
+    <ion-row>
+      <ion-col size="4">
+        <ion-card color="success" class="ion-padding ion-text-center">
+          <ion-row>
+              <ion-text class="sub-card">
+                Cotisations
+              </ion-text>
+          </ion-row>
+          <ion-row>
+            <ion-text class="sub-card">
+              1000
+            </ion-text>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+      <ion-col size="4">
+        <ion-card color="warning" class="ion-padding ion-text-center">
+          <ion-row>
+            <ion-text class="sub-card">
+              Retards
+            </ion-text>
+          </ion-row>
+          <ion-row>
+            <ion-text class="sub-card">
+              1000
+            </ion-text>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+      <ion-col size="4">
+        <ion-card color="danger" class="ion-padding ion-text-center">
+          <ion-row>
+            <ion-text class="sub-card">
+              Echecs
+            </ion-text>
+          </ion-row>
+          <ion-row>
+            <ion-text class="sub-card">
+              1000
+            </ion-text>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-row class="ion-padding-horizontal">
+        <ion-segment (ionChange)="segmentChanged($event)" value='cotisations'>
+          <ion-segment-button value="cotisations" >
+            <ion-label class="text-title"> Cotisations</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="retards">
+            <ion-label class="text-title">Retards</ion-label>
+          </ion-segment-button>
+          <ion-segment-button  value="echecs">
+            <ion-label class="text-title"> Echecs</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-row>
+    </ion-row>
+
+    <ion-grid>
+      <ion-card *ngIf="currentSegment === 'cotisations'">
+        <ion-list *ngIf="currentSeance && currentSeance.cotisations" >
+          <ion-item *ngFor="let item of currentSeance.cotisations" >
+            <ion-avatar slot="start">
+              <ion-img src="https://i.pravatar.cc/300?u=b"></ion-img>
+            </ion-avatar>
+            <ion-label>
+              <h2>{{item.nom+' '+item.prenom}}</h2>
+              <p>{{item.created_at | date:'dd/MM/yyyy'}}</p>
+            </ion-label>
+            <ion-checkbox slot="end" [(ngModel)]="cucumber" (ionChange)="updateCucumber()"></ion-checkbox>
+          </ion-item>
+          </ion-list>
+      </ion-card>
+
+      <ion-card *ngIf="currentSegment === 'retards'">
+        <ion-list *ngIf="currentSeance && currentSeance.retards" >
+          <ion-item *ngFor="let item of currentSeance.retards" >
+            <ion-avatar slot="start">
+              <ion-img src="https://i.pravatar.cc/300?u=b"></ion-img>
+            </ion-avatar>
+            <ion-label>
+              <h2>{{item.nom+' '+item.prenom}}</h2>
+              <p>{{item.created_at | date:'dd/MM/yyyy'}}</p>
+            </ion-label>
+            <ion-button slot="end"  size="small" shape="round"
+                 fill="outline"
+                 color="warning"
+                 >Payer</ion-button>
+          </ion-item>
+
+          </ion-list>
+      </ion-card>
+
+      <ion-card *ngIf="currentSegment === 'echecs'">
+        <ion-list *ngIf="currentSeance && currentSeance.echecs">
+          <ion-item *ngFor="let item of currentSeance.echecs">
+            <ion-avatar slot="start">
+              <ion-img src="https://i.pravatar.cc/300?u=b"></ion-img>
+            </ion-avatar>
+            <ion-label>
+              <h2>{{item.nom+' '+item.prenom}}</h2>
+              <p>{{item.created_at | date:'dd/MM/yyyy'}} </p>
+            </ion-label>
+            <ion-button slot="end"  size="small" shape="round"
+                 fill="outline"
+                 color="danger"
+                 >Payer</ion-button>
+          </ion-item>
+          </ion-list>
+      </ion-card>
+    </ion-grid>
+  </ion-grid>
+</ion-content>

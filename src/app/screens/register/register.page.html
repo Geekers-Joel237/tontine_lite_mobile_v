@@ -30,11 +30,7 @@
               <ion-input formControlName="prenom" class="label-text"inputmode="text" placeholder="Votre Prenom"></ion-input>
               <ion-note slot="error" class="label-text" *ngIf="(prenom.dirty||prenom.touched)&& prenom.errors">champ prenom requis</ion-note>
             </ion-item>
-            <!-- <ion-item>
-              <ion-label position="stacked" class="label-text">Email</ion-label>
-              <ion-input formControlName="email"class="label-text" type="email" inputmode="email" placeholder="Votre Email"></ion-input>
-              <ion-note slot="error" class="label-text" *ngIf="(email.dirty||email.touched)&& email.errors">champ e-mail non valide</ion-note>
-            </ion-item> -->
+
             <ion-item>
               <ion-label position="stacked" class="label-text">Pays</ion-label>
               <ion-select placeholder="Votre Pays"  class="label-text" formControlName="pays" (ionChange)="setCode($event)">
@@ -73,7 +69,7 @@
 
             <ion-item style="position:relative">
               <ion-label position="stacked" class="label-text" >Mot de passe</ion-label>
-             <ion-row style="position: relative;">
+             <ion-row class="custom-row">
               <ion-col size="10">
                 <ion-input [type]="password_input_type" class="label-text" placeholder="Mot De Passe" formControlName="password"></ion-input>
               </ion-col>

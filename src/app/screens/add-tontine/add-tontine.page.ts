@@ -2,6 +2,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastController } from '@ionic/angular';
 import { TontinesService } from 'src/app/services/tontines.service';
 
 @Component({
@@ -19,6 +20,7 @@ export class AddTontinePage implements OnInit {
     private fb: FormBuilder,
     private tontineService: TontinesService,
     private router: Router,
+    private toastController: ToastController,
 
 
   ) { }
@@ -90,18 +92,27 @@ export class AddTontinePage implements OnInit {
 
   onSubmit(){
     if(this.formGroup.invalid){
+      this.presentToast('top','Champs Requis','danger');
       console.log('invalid form');
     }else{
       console.log(this.formGroup.value);
       this.tontineService.createNewTontine(this.formGroup.value).subscribe((data)=>{
         console.log(data);
         if(this.files.length > 0){
-          this.tontineService.sendFiles({
-            file:this.files[0][0],
-            tontine_id: data.data.id
-          }).subscribe(
-            (val)=>console.log(val),
-            (err)=>console.log(err)
+          const formData = new FormData();
+          formData.append('file',this.files[this.files.length - 1][0]);
+          formData.append('tontine_id',data.data.id);
+          formData.append('type','reglement');
+          console.log(formData);
+          this.tontineService.sendFiles(formData).subscribe(
+            (val)=>{
+              console.log(val);
+              this.presentToast('top','Tontine Cree','success');
+              this.router.navigate(['/tabs-menu/tontines']);
+            },
+            (err)=>{console.log(err);
+            this.presentToast('top','Erreur Veuillez Recommencer','danger');
+            }
           );
         }
       },(err)=>{
@@ -112,6 +123,18 @@ export class AddTontinePage implements OnInit {
 
   getFiles($ev){
       this.files.push($ev.target.files);
-      console.log(this.files[0][0]);
+      console.log(this.files[this.files.length - 1]);
   }
+
+  async presentToast(position: 'top' | 'middle' | 'bottom',msg: string,color: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 1500,
+      color,
+      position
+    });
+
+    await toast.present();
+  }
+
 }

@@ -1,7 +1,11 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
-
+import { ActivatedRoute, Router } from '@angular/router';
+import { ActionSheetController, AlertController, ToastController } from '@ionic/angular';
+import { DemandesService } from 'src/app/services/demandes.service';
+import { TontinesService } from 'src/app/services/tontines.service';
+import { ModalController, NavParams } from '@ionic/angular';
+import { AddExercicePage } from 'src/app/modalsPages/add-exercice/add-exercice.page';
 
 @Component({
   selector: 'app-tontine-detail',
@@ -11,10 +15,21 @@ import { AlertController } from '@ionic/angular';
 export class TontineDetailPage implements OnInit {
   currentUser = null;
   user = null;
+  id = null;
+  currentTontine = null;
+  searchInput = '';
+  handlerMessage = '';
+  roleMessage = '';
 
   constructor(
     private router: Router,
+    private demandeService: DemandesService,
     private alertController: AlertController,
+    private activatedRoute: ActivatedRoute,
+    private tontineService: TontinesService,
+    private toastController: ToastController,
+    private modalCtrl: ModalController,
+
 
   ) { }
 
@@ -26,8 +41,20 @@ export class TontineDetailPage implements OnInit {
       return;
     }else{
       this.user = this.currentUser.user;
+      this.id = this.activatedRoute.snapshot.params.id;
+      console.log(this.id);
 
+      this.getTontineInfo(this.id);
     }
+  }
+
+  getTontineInfo(id: number){
+    this.tontineService.allTontinesInfo(this.id).subscribe(
+      (data)=>{
+        console.log(data);
+        this.currentTontine = data.data;
+      },(err)=>console.log(err)
+    );
   }
 
   async showActionSheet(){
@@ -100,6 +127,114 @@ export class TontineDetailPage implements OnInit {
 
   }
 
+  refuseDemande(idDem: number,idUser: number){
+    this.demandeService.cancelDemande(idDem,idUser).subscribe((data)=>{
+      console.log(data);
+      this.getTontineInfo(this.id);
+    },(err)=>{
+      console.log(err);
+    });
+  }
 
+  acceptDemande(idDem: number,idUser: number){
+    const len = this.currentTontine.membres.length;
+    if(len <= this.currentTontine.maxT){
+
+      this.demandeService.acceptDemande(idDem,idUser).subscribe((data)=>{
+        console.log(data);
+        this.presentToast('top','Demande Acceptee','success');
+        this.tontineService.postMembre({user_id:idUser,tontine_id:this.currentTontine.id,exercice_id:null})
+                .subscribe((value)=>{
+                    console.log(value);
+                    this.getTontineInfo(this.id);
+                    // this.presentToast('top','Demande Acceptee','success');
+
+                },(err)=>{
+                  console.log(err);
+
+                });
+
+      },(err)=>{
+        console.log(err);
+      });
+
+    }else{
+      this.presentToast('top','Tontine Deja Pleine','success');
+
+    }
+
+  }
+
+  async presentToast(position: 'top' | 'middle' | 'bottom',msg: string,color: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 1500,
+      color,
+      position
+    });
+
+    await toast.present();
+  }
+
+  async presentExerciceModal(){
+    const exerciceModal = await this.modalCtrl.create({
+      component:AddExercicePage,
+      breakpoints:[0,0.75],
+      initialBreakpoint:0.75,
+      animated:true,
+      handle:true
+    });
+    await exerciceModal.present();
+  }
+
+  async presentUpdateTontineModal(){
+    const updateTontineModal = await this.modalCtrl.create({
+      component:AddExercicePage,
+      breakpoints:[0,0.75],
+      initialBreakpoint:0.75,
+      animated:true,
+      handle:true
+    });
+    await updateTontineModal.present();
+  }
+
+  goToExercice(id: number){
+    this.router.navigate(['/exercice-detail/'+id]);
+  }
+
+  deleteTontine(id: number){
+    this.presentAlert();
+  }
+
+  updateTontine(id: number){
+    this.presentUpdateTontineModal();
+  }
+
+  async presentAlert() {
+    const alert = await this.alertController.create({
+      header: 'Vous etes sur le point de supprimer votre tontine!',
+      buttons: [
+        {
+          text: 'Annuler',
+          role: 'cancel',
+          handler: () => {
+            this.handlerMessage = 'Alert canceled';
+          },
+        },
+        {
+          text: 'Supprimer',
+          role: 'confirm',
+          handler: () => {
+            this.handlerMessage = 'Alert confirmed';
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+
+    const { role } = await alert.onDidDismiss();
+    this.roleMessage = `Dismissed with role: ${role}`;
+  }
 
 }

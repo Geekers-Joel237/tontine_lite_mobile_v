@@ -57,5 +57,13 @@ sendFiles(params: any): Observable<any>{
   return this.http.post<any>(environment.apiUrl+'/upload-file',params);
 }
 
+allTontinesInfo(id: number): Observable<any>{
+  return this.http.get(environment.apiUrl+'/tontines-info/'+id);
+}
+
+createNewExercice(params: any): Observable<any>{
+  return this.http.post<any>(environment.apiUrl+'/exercices',params);
+}
+
 }
 
