@@ -6,8 +6,10 @@ import { AlertController } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { OverlayEventDetail } from '@ionic/core/components';
-import { FormBuilder, FormGroup } from '@angular/forms';
-
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+import { SocialSharing } from '@awesome-cordova-plugins/social-sharing/ngx';
 
 @Component({
   selector: 'app-tontines',
@@ -25,6 +27,7 @@ export class TontinesPage implements OnInit {
   mesTontines = null;
   adminTontines = null;
   formGroup: FormGroup;
+  searchInput = '';
 
   constructor(
     private tontineService: TontinesService,
@@ -33,6 +36,7 @@ export class TontinesPage implements OnInit {
     private toastController: ToastController,
     private router: Router,
     private fb: FormBuilder,
+    private socialSharing: SocialSharing
 
 
 
@@ -47,8 +51,8 @@ export class TontinesPage implements OnInit {
 
 
   ngOnInit() {
+    registerLocaleData(localeFr,'fr');
     this.currentUser = JSON.parse(localStorage.getItem('user'));
-    console.log(this.currentUser);
     if(!this.currentUser)
       {this.router.navigate(['/login']);
       return;
@@ -65,7 +69,6 @@ export class TontinesPage implements OnInit {
 
   ionViewWillEnter(){
     this.getTontines();
-    console.log('ionViewWillEnter');
   }
 
   pinFormatter(value: number) {
@@ -74,11 +77,11 @@ export class TontinesPage implements OnInit {
 
   syncForm(){
     this.formGroup = this.fb.group({
-      nomT:[''],
-      membreMax:[100],
-      montantMax:[100000],
-      ouverte:[true],
-      fermee:[true]
+      // nomT:[''],
+      membreMax:[100,Validators.required],
+      montantMax:[100000,Validators.required],
+      ouverte:[true,Validators.required],
+      fermee:[true,Validators.required]
     });
   }
 
@@ -104,7 +107,6 @@ export class TontinesPage implements OnInit {
     else{
       if(item.user_id === this.currentUser.user.id){
         console.log('on partage plutot');
-        this.share(item);
       }else{
         const actionSheet = await this.actionSheetController.create({
           header:item.nomT,
@@ -309,6 +311,22 @@ cancel() {
 
 confirm() {
   console.log(this.formGroup.value);
+  if(this.formGroup.invalid){
+    this.presentToast('top','Recherche non valide','warning');
+  }else{
+    if(!this.formGroup.value.fermee){
+      this.formGroup.value.fermee = null;
+    }
+    if(!this.formGroup.value.ouverte){
+      this.formGroup.value.ouverte = null;
+    }
+    this.tontineService.tontineFilter(this.formGroup.value).subscribe(
+      (data)=>{
+        console.log(data.data);
+        this.tontines = data.data;
+      },(err)=> console.log(err)
+    );
+  }
   this.modal.dismiss( 'confirm');
 }
 
@@ -317,6 +335,24 @@ onWillDismiss(event: Event) {
   if (ev.detail.role === 'confirm') {
     console.log(ev.detail.data);
   }
+}
+
+shareOnWhatsapp(){
+  this.socialSharing.shareViaWhatsApp('Telecharge l\'appli',null,'https://www.youtube.com/watch?v=gtUcJLyz5nY')
+  .then((data)=>console.log(data))
+  .catch(err => console.log(err));
+}
+
+shareOnFacebook(){
+  this.socialSharing.shareViaFacebook('Telecharge l\'appli',null,'https://www.youtube.com/watch?v=gtUcJLyz5nY')
+  .then((data)=>console.log(data))
+  .catch(err => console.log(err));
+}
+
+shareOnTwitter(){
+  this.socialSharing.shareViaTwitter('Telecharge l\'appli',null,'https://www.youtube.com/watch?v=gtUcJLyz5nY')
+  .then((data)=>console.log(data))
+  .catch(err => console.log(err));
 }
 
 share(item: any){

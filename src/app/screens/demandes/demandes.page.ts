@@ -5,6 +5,8 @@ import { TontinesService } from 'src/app/services/tontines.service';
 import { ActionSheetController } from '@ionic/angular';
 import { IonModal } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core/components';
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
 
 @Component({
   selector: 'app-demandes',
@@ -35,6 +37,7 @@ export class DemandesPage implements OnInit {
   ) { }
 
   ngOnInit() {
+    registerLocaleData(localeFr,'fr');
     this.currentUser = JSON.parse(localStorage.getItem('user'));
     console.log(this.currentUser);
     if(!this.currentUser)

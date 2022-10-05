@@ -20,4 +20,20 @@ export class ExercicesService {
   getExerciceInfo(id: number): Observable<any>{
     return this.http.get<any>(environment.apiUrl+'/exercices-info/'+id);
   }
+
+  updateExercice(id: number,params: any): Observable<any>{
+    return this.http.put<any>(environment.apiUrl+'/exercices/'+id,params);
+  }
+
+  validerExercice(idExercice: number): Observable<boolean> {
+    return this.http.put<boolean>(`${environment.apiUrl}/exercices/${idExercice}`,{
+      statusE:false
+    });
+  }
+
+  annulerExercice(idExercice: number): Observable<boolean> {
+    return this.http.put<boolean>(`${environment.apiUrl}/exercices/${idExercice}`,{
+      etatE:true
+    });
+  }
 }

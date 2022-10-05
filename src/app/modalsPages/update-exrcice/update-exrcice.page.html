@@ -1,0 +1,63 @@
+
+
+<ion-content color="secondary">
+  <form  [formGroup]="formGroup">
+    <ion-item>
+      <ion-label position="stacked" class="label-text">Date Debut</ion-label>
+      <ion-input formControlName="dateDebutE" class="label-text" type="date"></ion-input>
+      <ion-note slot="error" class="label-text" *ngIf="(dateDebutE.dirty||dateDebutE.touched)&& dateDebutE.errors">champ date de debut requis</ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked" class="label-text">Duree Exercice</ion-label>
+      <ion-input formControlName="duree" class="label-text" type="number" min="1" inputmode="tel" placeholder="Duree"></ion-input>
+      <ion-note slot="error" class="label-text" *ngIf="(duree.dirty||duree.touched)&& duree.errors">champ duree requis</ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked" class="label-text">Periodicite</ion-label>
+      <ion-select (ionChange)="setCycle($event)" placeholder="Periodicite"  class="label-text" formControlName="periodicite" >
+        <ion-select-option value="Jour">Jour</ion-select-option>
+        <ion-select-option value="Semaine" >Semaine</ion-select-option>
+        <ion-select-option value="Mois" >Mois</ion-select-option>
+        <ion-select-option value="Annee" >Annee</ion-select-option>
+      </ion-select>
+      <ion-note slot="error" class="label-text" *ngIf="(periodicite.dirty||periodicite.touched)&& periodicite.errors">champ periodicite requis</ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked" class="label-text">Frequence de Cotisation</ion-label>
+      <ion-row style="width:100%;">
+        <ion-col size="9">
+          <ion-input formControlName="frequence" class="label-text" type="number" min="1" inputmode="tel" placeholder="frequence de Cotisation"></ion-input>
+        </ion-col>
+        <ion-col size="3" color="medium" class="ion-text-end">
+            <ion-note  color="medium">{{cycle}}
+            </ion-note>
+        </ion-col>
+      </ion-row>
+      <ion-note slot="error" class="label-text" *ngIf="(frequence.dirty||frequence.touched)&& frequence.errors">champ frequence requis</ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked" class="label-text">Heure Tontine</ion-label>
+      <ion-input formControlName="heureTontine" class="label-text" type="time" min="1" inputmode="tel" ></ion-input>
+
+      <ion-note slot="error" class="label-text" *ngIf="(heureTontine.dirty||heureTontine.touched)&& heureTontine.errors">champ max requis</ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked" class="label-text">Lieu de Tontine</ion-label>
+      <ion-input formControlName="lieuTontine" placeholder="Lieu de la Tontine" class="label-text" ></ion-input>
+
+      <ion-note slot="error" class="label-text" *ngIf="(lieuTontine.dirty||lieuTontine.touched)&& lieuTontine.errors">champ nombre de beneficiaires requis</ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked" class="label-text">Nombre de Beneficiaires</ion-label>
+      <ion-input formControlName="nbreBenef" placeholder="Nombre de Beneficiaires" class="label-text" type="number" min="1" inputmode="tel" ></ion-input>
+
+      <ion-note slot="error" class="label-text" *ngIf="(nbreBenef.dirty||nbreBenef.touched)&& nbreBenef.errors">champ nombre de beneficiaires requis</ion-note>
+    </ion-item>
+    <ion-row class="ion-justify-content-end">
+      <ion-col class="ion-align-self-end">
+        <ion-button expand="block" (click)="onSubmit()" class="ion-text-capitalize" >Modifier</ion-button>
+      </ion-col>
+    </ion-row>
+
+  </form>
+</ion-content>

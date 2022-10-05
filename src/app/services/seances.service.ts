@@ -17,6 +17,18 @@ export class SeancesService {
     return this.http.delete<boolean>(environment.apiUrl + '/seances/' + id);
   }
 
+  valideSeance(idSeance: number): Observable<boolean> {
+    return this.http.put<boolean>(`${environment.apiUrl}/seances/${idSeance}`,{
+      statutS:false
+    });
+  }
+
+  annulerSeance(idSeance: number): Observable<boolean> {
+    return this.http.put<boolean>(`${environment.apiUrl}/seances/${idSeance}`,{
+      etatS:true
+    });
+  }
+
   getSeanceInfo(id: number): Observable<any>{
     return this.http.get<any>(environment.apiUrl+'/seances-info/'+id);
   }

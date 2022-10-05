@@ -14,14 +14,33 @@
 </ion-header>
 
 <ion-content color="secondary">
-<ion-grid>
-  <ion-card  class="ion-no-border ion-padding" *ngFor="let item of tontines;let i = index;" (click)="presentActionSheet(item)">
+<ion-grid *ngIf="tontines">
+  <ion-searchbar placeholder="Search"  [(ngModel)]="searchInput">
+  </ion-searchbar>
+  <ion-card  class="ion-no-border ion-padding" *ngFor="let item of tontines | filter:searchInput;let i = index; " (click)="presentActionSheet(item)">
       <ion-row>
         <ion-col size="9">
           <ion-text style="font-weight:bold;color:black">{{item.nomT}}</ion-text>
         </ion-col>
         <ion-col size="3" class="ion-text-end">
-          <ion-icon *ngIf="item.user_id === currentUser.user.id" name="share-social-outline" (click)="share(item)"></ion-icon>
+          <ion-icon size="medium" id="click-trigger" *ngIf="item.user_id === currentUser.user.id" name="share-social-outline" (click)="share(item)"></ion-icon>
+          <ion-popover trigger="click-trigger" triggerAction="click">
+            <ng-template>
+              <ion-content class="ion-padding">
+                <ion-row>
+                  <ion-col size="3" class="ion-text-center">
+                    <ion-icon name="logo-whatsapp" color="success" size="large" (click)="shareOnWhatsapp()"></ion-icon>
+                  </ion-col>
+                  <ion-col size="3" class="ion-text-center">
+                    <ion-icon name="logo-facebook" size="large" clor="primary" (click)="shareOnFacebook()"></ion-icon>
+                  </ion-col>
+                  <ion-col size="3" class="ion-text-center">
+                    <ion-icon name="logo-twitter" size="large" (click)="shareOnTwitter()"></ion-icon>
+                  </ion-col>
+                </ion-row>
+              </ion-content>
+            </ng-template>
+          </ion-popover>
         </ion-col>
       </ion-row>
       <ion-row>
@@ -31,7 +50,7 @@
       </ion-row>
       <ion-row>
         <ion-col>
-          <ion-text color="medium">{{ item.montantT+' XAF'}}</ion-text>
+          <ion-text color="medium">{{ item.montantT | currency:'XAF'}}</ion-text>
         </ion-col>
       </ion-row>
       <ion-row>
@@ -74,7 +93,9 @@
   </ion-fab-list>
 </ion-fab>
 
-<ion-modal trigger="open-modal" (willDismiss)="onWillDismiss($event)">
+<ion-modal trigger="open-modal" (willDismiss)="onWillDismiss($event)"
+[initialBreakpoint]="0.25"
+[breakpoints]="[0, 0.25, 0.5, 0.75]">
   <ng-template>
     <ion-header>
       <ion-toolbar>
@@ -88,10 +109,10 @@
     </ion-header>
     <ion-content class="ion-padding">
       <form [formGroup]="formGroup">
-        <ion-item>
+        <!-- <ion-item>
           <ion-label position="stacked" class="text-title">Nom Tontine</ion-label>
           <ion-input type="text" formControlName="nomT" class="text-title"></ion-input>
-        </ion-item>
+        </ion-item> -->
         <ion-item>
                 <ion-checkbox slot="start" formControlName="fermee"></ion-checkbox>
                  <ion-label class="text-title" style="font-size:15px;">Fermee</ion-label>
@@ -102,12 +123,12 @@
           <ion-label class="text-title" style="font-size:15px;">Ouverte</ion-label>
         </ion-item>
         <ion-item>
-          <ion-label position="stacked" class="text-title">Nombre de Membres</ion-label>
+          <ion-label position="stacked" class="text-title">Nombre de Membres Maximal</ion-label>
             <ion-range [pin]="true" formControlName="membreMax" [pinFormatter]="pinFormatter" min="1" max="1000"></ion-range>
         </ion-item>
         <ion-item>
           <ion-label position="stacked" class="text-title">Montant Maximal</ion-label>
-          <ion-input type="number" formControlName="montantMax" min="1" max="1000000"></ion-input>
+          <ion-input type="number" inputmode="tel" formControlName="montantMax" min="1" max="1000000"></ion-input>
         </ion-item>
       </form>
     </ion-content>

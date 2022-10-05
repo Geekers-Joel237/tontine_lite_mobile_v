@@ -115,6 +115,15 @@ export class AddTontinePage implements OnInit {
             }
           );
         }
+        this.tontineService.postMembre({user_id:this.user.id,tontine_id:data.data.id,exercice_id:null})
+          .subscribe((value)=>{
+              console.log(value);
+              this.presentToast('top','Tontine Cree','success');
+              this.router.navigate(['/tabs-menu/tontines']);
+          },(err)=>{
+            console.log(err);
+
+          });
       },(err)=>{
         console.log(err);
       });

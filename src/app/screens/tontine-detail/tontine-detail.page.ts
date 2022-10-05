@@ -6,6 +6,8 @@ import { DemandesService } from 'src/app/services/demandes.service';
 import { TontinesService } from 'src/app/services/tontines.service';
 import { ModalController, NavParams } from '@ionic/angular';
 import { AddExercicePage } from 'src/app/modalsPages/add-exercice/add-exercice.page';
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
 
 @Component({
   selector: 'app-tontine-detail',
@@ -34,6 +36,7 @@ export class TontineDetailPage implements OnInit {
   ) { }
 
   ngOnInit() {
+    registerLocaleData(localeFr,'fr');
     this.currentUser = JSON.parse(localStorage.getItem('user'));
     console.log(this.currentUser);
     if(!this.currentUser)
@@ -182,8 +185,12 @@ export class TontineDetailPage implements OnInit {
       breakpoints:[0,0.75],
       initialBreakpoint:0.75,
       animated:true,
-      handle:true
+      handle:true,
+      componentProps:{
+        id:this.id,
+      }
     });
+    console.log(this.id);
     await exerciceModal.present();
   }
 
@@ -193,24 +200,28 @@ export class TontineDetailPage implements OnInit {
       breakpoints:[0,0.75],
       initialBreakpoint:0.75,
       animated:true,
-      handle:true
+      handle:true,
+
+
     });
     await updateTontineModal.present();
+    await console.log('ici',this.id);
   }
 
-  goToExercice(id: number){
-    this.router.navigate(['/exercice-detail/'+id]);
+  goToExercice(id: number,i: number){
+    localStorage.setItem('currentTontine',JSON.stringify(this.currentTontine));
+    this.router.navigate(['/exercice-detail/'+id+'/'+(i+1)]);
   }
 
   deleteTontine(id: number){
-    this.presentAlert();
+    this.presentAlert(id);
   }
 
   updateTontine(id: number){
     this.presentUpdateTontineModal();
   }
 
-  async presentAlert() {
+  async presentAlert(id: number) {
     const alert = await this.alertController.create({
       header: 'Vous etes sur le point de supprimer votre tontine!',
       buttons: [
@@ -225,6 +236,12 @@ export class TontineDetailPage implements OnInit {
           text: 'Supprimer',
           role: 'confirm',
           handler: () => {
+            this.tontineService.deleteTontine(id).subscribe(
+              (data)=>{
+                console.log(data);
+                this.router.navigate(['/tabs-menu/tontines']);
+              },(err)=>console.log(err)
+            );
             this.handlerMessage = 'Alert confirmed';
           },
         },

@@ -7,13 +7,16 @@ import { IonicModule } from '@ionic/angular';
 import { ExerciceDetailPageRoutingModule } from './exercice-detail-routing.module';
 
 import { ExerciceDetailPage } from './exercice-detail.page';
+import { Ng2SearchPipeModule } from 'ng2-search-filter';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    ExerciceDetailPageRoutingModule
+    ExerciceDetailPageRoutingModule,
+    Ng2SearchPipeModule
+
   ],
   declarations: [ExerciceDetailPage]
 })

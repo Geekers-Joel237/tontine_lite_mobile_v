@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+/* eslint-disable @typescript-eslint/naming-convention */
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { TontinesService } from 'src/app/services/tontines.service';
 
 @Component({
@@ -8,13 +10,23 @@ import { TontinesService } from 'src/app/services/tontines.service';
   styleUrls: ['./add-exercice.page.scss'],
 })
 export class AddExercicePage implements OnInit {
+  @Input() id: number ;
   formGroup: FormGroup;
   cycle = 'Mois';
   currentTontine = null;
+  nbreSeances = null;
+  periodeExercice = '';
+  dureeExercice;
+  frequenceExercice;
+  facteur: number;
+  dateDebutExercice: Date;
+
 
   constructor(
     private fb: FormBuilder,
     private tontineService: TontinesService,
+    private activatedRoute: ActivatedRoute,
+
 
   ) { }
 
@@ -43,7 +55,7 @@ export class AddExercicePage implements OnInit {
       lieuTontine:['',Validators.required],
       nbreBenef:['',Validators.required],
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      tontine_id:[101]
+      tontine_id:[this.id]
     });
   }
 
@@ -60,11 +72,61 @@ export class AddExercicePage implements OnInit {
         this.formGroup.value
       ).subscribe((data)=>{
         console.log(data);
-        window.location.reload();
+        this.generateSeances(data.data);
+
+
       },(err)=>{
         console.log(err);
       });
 
     }
+  }
+
+   addDays(numOfDays: number, date = new Date('dd/MM/yyyy')) {
+    date.setDate(date.getDate() + numOfDays);
+
+    return date.toISOString().split('T')[0] + ' '
+    + date.toTimeString().split(' ')[0];;
+  }
+
+  generateSeances(data: any){
+    const dateArr = [];
+    this.dateDebutExercice = new Date(data.dateDebutE);
+    this.periodeExercice = data.periodicite;
+    this.dureeExercice = Number(data.duree);
+    this.frequenceExercice = Number(data.frequence);
+
+    if(this.periodeExercice === 'Jour'){
+      this.facteur = 1;
+    }else if(this.periodeExercice === 'Semaine'){
+      this.facteur = 7;
+    }else if(this.periodeExercice === 'Mois'){
+      this.facteur = 30;
+    }else if(this.periodeExercice === 'Annee'){
+      this.facteur = 365;
+    }
+    this.dureeExercice *= this.facteur;
+    this.nbreSeances = this.dureeExercice / (this.frequenceExercice * this.facteur);
+    console.log(this.dateDebutExercice,
+      this.periodeExercice,this.dureeExercice,this.frequenceExercice,this.nbreSeances);
+    for(let i=0;i<this.nbreSeances;++i){
+      dateArr.push(this.addDays(this.facteur,this.dateDebutExercice));
+      console.log(dateArr);
+    }
+    for(let date of dateArr){
+      this.tontineService.createNewSeance({
+        dateS: date,
+        exercice_id: data.id
+      }).subscribe(
+        (val)=>console.log(val),
+        (err)=>console.log(err)
+      );
+    }
+
+    dateArr.splice(0,dateArr.length);
+    // setTimeout(() => {
+    //   window.location.reload();
+    // }, 2000);
+
   }
 }

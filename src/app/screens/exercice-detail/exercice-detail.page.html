@@ -2,7 +2,9 @@
   <ion-toolbar color="primary">
     <ion-row >
       <ion-col size="3">
-        <ion-icon name="arrow-back-outline" size="medium" (click)="myBackButton()"></ion-icon>
+        <ion-icon name="arrow-back-outline" size="medium" (click)="myBackButton()" *ngIf="currentTontine.user_id === currentUser.user.id">
+
+        </ion-icon>
       </ion-col>
       <ion-col size="6">
           <ion-title color="light" class="text-title ion-text-center ion-text-capitalize">Detail Exercice</ion-title>
@@ -13,17 +15,35 @@
           <ng-template class="custom-popover">
             <ion-content class="ion-padding " >
               <ion-list>
-                <ion-item lines="none" (click)="updateSeance(id)">
+                <ion-item lines="none" (click)="annulerExercice(id)">
+                  <ion-text slot="start">
+                    Annuler
+                  </ion-text>
+                  <ion-icon name="log-in-outline" slot="end"></ion-icon>
+                </ion-item >
+                <ion-item lines="none" (click)="updateExercice(id,currentExercice)">
                   <ion-text slot="start">
                     Modifier
                   </ion-text>
                   <ion-icon slot="end" name="create-outline" ></ion-icon>
                 </ion-item >
-                <ion-item lines="none" (click)="deleteSeance(id)">
+                <ion-item lines="none" (click)="deleteExercice(id)">
                   <ion-text slot="start">
                     Supprimer
                   </ion-text>
                   <ion-icon slot="end" name="trash-outline"></ion-icon>
+                </ion-item>
+                <ion-item lines="none" (click)="validerExercice(id)">
+                  <ion-text slot="start">
+                    Valider
+                  </ion-text>
+                  <ion-icon name="checkmark-outline" slot="end"></ion-icon>
+                </ion-item>
+                <ion-item lines="none" >
+                  <ion-text slot="start">
+                    Membres
+                  </ion-text>
+                  <ion-icon name="add-outline" slot="end"></ion-icon>
                 </ion-item>
               </ion-list>
             </ion-content>
@@ -40,15 +60,20 @@
       <ion-card class="ion-no-border ion-padding custom-bottom">
         <ion-row>
           <ion-col size="6" class="custom-center">
-              <ion-text class="custom" >Exercice 1</ion-text>
+              <ion-text class="custom" >Exercice No {{rank}}</ion-text>
           </ion-col>
           <ion-col size="2"></ion-col>
-          <ion-col size="4">
+          <ion-col size="4"  *ngIf="!currentExercice.etatE">
             <ion-note color="success" *ngIf="currentExercice.statusE">
               En cours
             </ion-note>
-            <ion-note color="danger" *ngIf="!currentExercice.statusE">
+            <ion-note color="warning" *ngIf="!currentExercice.statusE">
               Termine
+            </ion-note>
+          </ion-col>
+          <ion-col size="4"  *ngIf="currentExercice.etatE">
+            <ion-note color="danger" >
+              Annule
             </ion-note>
           </ion-col>
         </ion-row>
@@ -62,7 +87,7 @@
 
           </ion-col>
           <ion-col size="4">
-            {{currentExercice.created_at | date:'dd/MM/yyyy'}}
+            {{currentExercice.dateDebutE | date:'dd/MM/yyyy' }}
           </ion-col>
         </ion-row>
         <ion-row>
@@ -87,7 +112,7 @@
           </ion-row>
           <ion-row>
             <ion-text class="sub-card">
-              <!-- {{currentExercice.retardsPayes.length * currentExercice.r}} XAF -->
+              {{(currentExercice.retardsPayes.length * currentTontine.retard) | currency:'XAF'}}
 
             </ion-text>
           </ion-row>
@@ -102,7 +127,7 @@
           </ion-row>
           <ion-row>
             <ion-text class="sub-card">
-              1000
+              {{(currentExercice.echecsPayes.length * currentTontine.echec) | currency:'XAF'}}
             </ion-text>
           </ion-row>
         </ion-card>
@@ -118,7 +143,7 @@
           </ion-row>
           <ion-row>
             <ion-text class="sub-card">
-              1000
+              {{(currentExercice.retardsNonPayes.length * currentTontine.retard) | currency:'XAF'}}
             </ion-text>
           </ion-row>
         </ion-card>
@@ -132,7 +157,7 @@
           </ion-row>
           <ion-row>
             <ion-text class="sub-card">
-              1000
+              {{(currentExercice.echecsNonPayes.length * currentTontine.echec) | currency:'XAF'}}
             </ion-text>
           </ion-row>
         </ion-card>
@@ -149,7 +174,7 @@
           </ion-row>
           <ion-row>
             <ion-text class="sub-card">
-              1000
+              {{(currentExercice.cotisations.length * currentTontine.montantT) | currency:'XAF'}}
             </ion-text>
           </ion-row>
         </ion-card>
@@ -157,40 +182,72 @@
       <ion-col size="3"></ion-col>
     </ion-row>
 
-    <ion-row class="ion-padding" >
-      <ion-col size="9">
-        <ion-text color="dark" >
-          Toutes les seances
-        </ion-text>
-      </ion-col>
-      <ion-col size="3" class="ion-text-end">
-        <ion-icon color="dark" size="large" name="ellipsis-horizontal-outline" ></ion-icon>
-      </ion-col>
-    </ion-row>
+    <ion-grid>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="9">
+            <ion-text color="dark" >
+              Toutes les seances
+            </ion-text>
+          </ion-col>
+          <ion-col size="3" class="ion-text-end">
+            <ion-icon color="dark" size="large" name="ellipsis-horizontal-outline" ></ion-icon>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-grid>
 
     <ion-grid *ngIf="currentExercice.seances">
-      <ion-card class="ion-padding" *ngFor="let item of currentExercice.seances;let i = index;">
-        <ion-row>
+      <ion-card class="ion-padding" *ngFor="let item of currentExercice.seances;let i = index;" >
+        <ion-row (click)="goToSeance(item,i)" >
           <ion-col size="4">
             Seance {{i+1}}
           </ion-col>
           <ion-col size="4"></ion-col>
           <ion-col size="4">
-            <ion-text>
-              {{item.statutS}}
+            <ion-text *ngIf="item.statutS" color="success">
+              A Venir
+            </ion-text>
+            <ion-text *ngIf="!item.statutS" color="warning">
+              Terminee
             </ion-text>
           </ion-col>
         </ion-row>
         <ion-row>
           <ion-col size="4">
-            {{item.created_at | date:'dd/MM/yyyy'}}
+            {{item.dateS | date:'dd/MM/yyyy'}}
           </ion-col>
           <ion-col size="4"></ion-col>
-          <ion-col size="4">
-            <ion-text>
+          <ion-col size="4" style="font-size:10px ;">
+            <ion-text id="open-modal1">
               Beneficiaires
             </ion-text>
             <ion-icon name="chevron-forward-outline"></ion-icon>
+            <ion-modal #modal trigger="open-modal1" [initialBreakpoint]="0.25" [breakpoints]="[0, 0.25, 0.5, 0.75]">
+              <ng-template>
+                <ion-content>
+                  <ion-searchbar placeholder="Search" (click)="modal.setCurrentBreakpoint(0.75)" [(ngModel)]="searchInput">
+                  </ion-searchbar>
+                  <ion-list>
+                    <ion-item *ngFor="let item of currentExercice.membres | filter:searchInput">
+                      <ion-avatar slot="start">
+                        <ion-img src="https://i.pravatar.cc/300?u=b"></ion-img>
+                      </ion-avatar>
+                      <ion-label>
+                        <h2>{{item.nom+' '+item.prenom}}</h2>
+                        <p>Depuis le {{item.created_at | date:'dd/MM/yyyy'}}</p>
+                      </ion-label>
+                      <ion-note slot="end" *ngIf="item.estActif" color="success">
+                        <p >Actif</p>
+                      </ion-note>
+                      <ion-note slot="end" *ngIf="!item.estActif" color="warning">
+                        <p >Suspendu</p>
+                      </ion-note>
+                    </ion-item>
+                    </ion-list>
+                </ion-content>
+              </ng-template>
+            </ion-modal>
           </ion-col>
         </ion-row>
       </ion-card>

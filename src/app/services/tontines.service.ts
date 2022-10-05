@@ -65,5 +65,17 @@ createNewExercice(params: any): Observable<any>{
   return this.http.post<any>(environment.apiUrl+'/exercices',params);
 }
 
+deleteTontine(id: number): Observable<any>{
+  return this.http.delete<any>(environment.apiUrl+'/tontines/'+id);
 }
 
+createNewSeance(params: any): Observable<any>{
+  return this.http.post<any>(environment.apiUrl+'/seances',params);
+}
+
+tontineFilter(params: any): Observable<any>{
+  return this.http.post<any>(environment.apiUrl+'/tontines/filter',params);
+}
+
+
+}

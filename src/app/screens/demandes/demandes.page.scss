@@ -5,5 +5,16 @@
 .custom-popover
 {
   width:35%;
-  
+
+}
+
+.super{
+  position: relative;
+  // border: 1px solid red;
+}
+
+.sub{
+  position: absolute;
+  bottom:30%;
+  right: -15px;
 }

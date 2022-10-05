@@ -14,8 +14,8 @@
 </ion-header>
 
 <ion-content color="secondary">
-<ion-grid>
-  <ion-row >
+<ion-grid class="ion-margin-vertical">
+  <ion-row>
     <ion-card style="width:100%">
       <ion-card-content>
         <form [formGroup]="formGroup" >
@@ -49,23 +49,24 @@
             <ion-note slot="error" class="label-text" *ngIf="(slogan.dirty||slogan.touched)&& slogan.errors">champ slogan requis</ion-note>
           </ion-item>
           <ion-item>
-            <ion-label position="stacked" class="label-text">Retard</ion-label>
+            <ion-label position="stacked" class="label-text">Montant Retard</ion-label>
             <ion-input formControlName="retard"class="label-text" min="1" type="number" inputmode="tel" placeholder="Montant Retard"></ion-input>
             <ion-note slot="error" class="label-text" *ngIf="(retard.dirty||retard.touched)&& retard.errors">champ retard requis</ion-note>
           </ion-item>
           <ion-item>
-            <ion-label position="stacked" class="label-text">Echec</ion-label>
+            <ion-label position="stacked" class="label-text">Montant Echec</ion-label>
             <ion-input formControlName="echec"class="label-text" min="1" type="number" inputmode="tel" placeholder="Montant echec"></ion-input>
             <ion-note slot="error" class="label-text" *ngIf="(echec.dirty||echec.touched)&& echec.errors">champ echec requis</ion-note>
           </ion-item>
           <ion-item>
-            <ion-label position="stacked" class="label-text">Sanction</ion-label>
+            <ion-label position="stacked" class="label-text">Montant Sanction</ion-label>
             <ion-input formControlName="sanction"class="label-text" min="1" type="number" inputmode="tel" placeholder="Montant sanction"></ion-input>
             <ion-note slot="error" class="label-text" *ngIf="(sanction.dirty||sanction.touched)&& sanction.errors">champ sanction requis</ion-note>
           </ion-item>
           <ion-item>
             <ion-label position="stacked" class="label-text">Reglement</ion-label>
-            <ion-textarea placeholder="Reglement" rows="6" cols="20" class="label-text" formControlName="reglement"></ion-textarea>
+            <ion-textarea placeholder="Veuillez entrer du texte ou joindre un fichier (25 characteres min)" rows="6" cols="20" class="label-text" formControlName="reglement">
+            </ion-textarea>
             <ion-note slot="error" class="label-text" *ngIf="(reglement.dirty||reglement.touched)&& reglement.errors">champ reglement requis</ion-note>
           </ion-item>
           <ion-item>

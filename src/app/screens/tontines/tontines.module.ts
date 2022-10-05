@@ -8,6 +8,7 @@ import { TontinesPageRoutingModule } from './tontines-routing.module';
 
 import { TontinesPage } from './tontines.page';
 import { HttpClientModule } from '@angular/common/http';
+import { Ng2SearchPipeModule } from 'ng2-search-filter';
 
 @NgModule({
   imports: [
@@ -17,7 +18,9 @@ import { HttpClientModule } from '@angular/common/http';
     TontinesPageRoutingModule,
     ReactiveFormsModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    Ng2SearchPipeModule,
+
   ],
   declarations: [TontinesPage]
 })
