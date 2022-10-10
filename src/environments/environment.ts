@@ -4,8 +4,10 @@
 
 export const environment = {
   production: false,
-  apiUrl:'http://localhost:8000/api',
-  storage:'http://localhost:8000/storage/'
+  // apiUrl:'http://localhost:8000/api',
+  // storage:'http://localhost:8000/storage/',
+  storage:'http://tontine.fiacademy.org/storage/',
+  apiUrl:'http://tontine.fiacademy.org/api',
 };
 
 /*

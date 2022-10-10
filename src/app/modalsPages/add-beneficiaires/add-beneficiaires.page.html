@@ -1,0 +1,20 @@
+
+
+<ion-content color="secondary" class="ion-padding">
+  <ion-searchbar placeholder="Search"  [(ngModel)]="searchInput">
+  </ion-searchbar>
+
+  <ion-list>
+    <ion-item *ngFor="let item of membresArr | filter:searchInput">
+      <ion-avatar slot="start">
+        <ion-img src="https://i.pravatar.cc/300?u=b"></ion-img>
+      </ion-avatar>
+      <ion-label>
+        <h2>{{item.nom+' '+item.prenom}}</h2>
+        <p>Depuis le {{item.created_at | date:'dd/MM/yyyy'}}</p>
+      </ion-label>
+      <ion-checkbox (click)="getBeneficiairesBySeanceId(seance.id,item.id)">
+      </ion-checkbox>
+    </ion-item>
+    </ion-list>
+</ion-content>

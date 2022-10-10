@@ -1,9 +1,65 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>updateTontine</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content color="secondary" class="ion-padding">
+  <form [formGroup]="formGroup" >
+    <ion-item>
+      <ion-label position="stacked" class="label-text">Nom Tontine</ion-label>
+      <ion-input formControlName="nomT" class="label-text" inputmode="text"placeholder="nom Tontine"></ion-input>
+      <ion-note slot="error" class="label-text" *ngIf="(nomT.dirty||nomT.touched)&& nomT.errors">champ nom requis</ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked" class="label-text">Type Tontine</ion-label>
+      <ion-select placeholder="Type"  class="label-text" formControlName="type" >
+        <ion-select-option value="Ouverte">Ouverte</ion-select-option>
+        <ion-select-option value="Fermee" >Fermee</ion-select-option>
+      </ion-select>
+      <ion-note slot="error" class="label-text" *ngIf="(type.dirty||type.touched)&& type.errors">champ type requis</ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked" class="label-text">Montant Cotisation</ion-label>
+      <ion-input formControlName="montantT" class="label-text" type="number" min="1" inputmode="tel" placeholder="montant Cotisation"></ion-input>
+      <ion-note slot="error" class="label-text" *ngIf="(montantT.dirty||montantT.touched)&& montantT.errors">champ montant requis</ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked" class="label-text">Effectif Maximal</ion-label>
+      <ion-input formControlName="maxT" class="label-text" type="number" min="1" inputmode="tel" placeholder="Effectif Maximal"></ion-input>
 
-<ion-content>
+      <ion-note slot="error" class="label-text" *ngIf="(maxT.dirty||maxT.touched)&& maxT.errors">champ max requis</ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked" class="label-text">Slogan</ion-label>
+      <ion-input formControlName="slogan" class="label-text" inputmode="text" placeholder="Votre Slogan"></ion-input>
+      <ion-note slot="error" class="label-text" *ngIf="(slogan.dirty||slogan.touched)&& slogan.errors">champ slogan requis</ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked" class="label-text">Montant Retard</ion-label>
+      <ion-input formControlName="retard"class="label-text" min="1" type="number" inputmode="tel" placeholder="Montant Retard"></ion-input>
+      <ion-note slot="error" class="label-text" *ngIf="(retard.dirty||retard.touched)&& retard.errors">champ retard requis</ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked" class="label-text">Montant Echec</ion-label>
+      <ion-input formControlName="echec"class="label-text" min="1" type="number" inputmode="tel" placeholder="Montant echec"></ion-input>
+      <ion-note slot="error" class="label-text" *ngIf="(echec.dirty||echec.touched)&& echec.errors">champ echec requis</ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked" class="label-text">Montant Sanction</ion-label>
+      <ion-input formControlName="sanction"class="label-text" min="1" type="number" inputmode="tel" placeholder="Montant sanction"></ion-input>
+      <ion-note slot="error" class="label-text" *ngIf="(sanction.dirty||sanction.touched)&& sanction.errors">champ sanction requis</ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked" class="label-text">Reglement</ion-label>
+      <ion-textarea placeholder="Veuillez entrer du texte ou joindre un fichier (25 characteres min)" rows="6" cols="20" class="label-text" formControlName="reglement">
+      </ion-textarea>
+      <ion-note slot="error" class="label-text" *ngIf="(reglement.dirty||reglement.touched)&& reglement.errors">champ reglement requis</ion-note>
+    </ion-item>
+    <!-- <ion-item>
+      <ion-label position="stacked" class="label-text">Joindre un fichier</ion-label>
+      <ion-input formControlName="file"class="label-text" type="file" placeholder="Joindre un fichier" (change)="getFiles($event)"></ion-input>
+      <ion-note slot="error" class="label-text" *ngIf="(file.dirty||file.touched)&& file.errors">champ file requis</ion-note>
+    </ion-item> -->
 
+    <ion-row class="ion-justify-content-end">
+      <ion-col class="ion-align-self-end">
+        <ion-button expand="block" (click)="onSubmit()" class="ion-text-capitalize" >Modifier</ion-button>
+      </ion-col>
+    </ion-row>
+  </form>
 </ion-content>

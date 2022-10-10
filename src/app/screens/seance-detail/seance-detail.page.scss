@@ -13,3 +13,32 @@
   width: 100%;
   color: #fff;
 }
+
+.custom-border1{
+  border:2px solid #2dd36f;
+  border-radius: 30%;
+
+}
+
+.custom-border2{
+  border:2px solid #ffc409;
+  border-radius: 30%;
+
+}
+
+.custom-border3{
+  border:2px solid #eb445a;
+  border-radius: 30%;
+
+}
+
+.custom-item{
+  position: relative;
+  // border:2px solid #eb445a;
+  width: 100%;
+}
+
+.custom-btn{
+  position:absolute;
+  right: 1%;
+}

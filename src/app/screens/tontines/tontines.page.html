@@ -15,7 +15,7 @@
 
 <ion-content color="secondary">
 <ion-grid *ngIf="tontines">
-  <ion-searchbar placeholder="Search"  [(ngModel)]="searchInput">
+  <ion-searchbar placeholder="Rechercher ..."  [(ngModel)]="searchInput">
   </ion-searchbar>
   <ion-card  class="ion-no-border ion-padding" *ngFor="let item of tontines | filter:searchInput;let i = index; " (click)="presentActionSheet(item)">
       <ion-row>
@@ -29,13 +29,13 @@
               <ion-content class="ion-padding">
                 <ion-row>
                   <ion-col size="3" class="ion-text-center">
+                    <ion-icon name="logo-facebook" size="large" color="primary" (click)="shareOnFacebook()"></ion-icon>
+                  </ion-col>
+                  <ion-col size="3" class="ion-text-center">
                     <ion-icon name="logo-whatsapp" color="success" size="large" (click)="shareOnWhatsapp()"></ion-icon>
                   </ion-col>
                   <ion-col size="3" class="ion-text-center">
-                    <ion-icon name="logo-facebook" size="large" clor="primary" (click)="shareOnFacebook()"></ion-icon>
-                  </ion-col>
-                  <ion-col size="3" class="ion-text-center">
-                    <ion-icon name="logo-twitter" size="large" (click)="shareOnTwitter()"></ion-icon>
+                    <ion-icon name="logo-twitter" size="large" color="primary" (click)="shareOnTwitter()"></ion-icon>
                   </ion-col>
                 </ion-row>
               </ion-content>
@@ -58,7 +58,7 @@
           <ion-text color="warning" *ngIf="demandes && demandes.includes(item.id) ">
            En Attente
           </ion-text>
-          <ion-text *ngIf="mesTontines &&  mesTontines.includes(item.id)" color="success">
+          <ion-text *ngIf="mesTontines &&  mesTontines.includes(item.id) && item.user_id !== currentUser.user.id" color="success">
             Membre
           </ion-text>
           <ion-text *ngIf="item.user_id === currentUser.user.id" color="success">
@@ -87,7 +87,7 @@
   </ion-fab-button>
   <ion-fab-list side="start">
     <ion-fab-button>
-      <ion-icon name="wallet-outline" [routerLink]="['/add-tontine']" routerLinkActive="router-link-active" ></ion-icon>
+      <ion-icon name="wallet-outline" (click)="openNewTontineModal()" ></ion-icon>
     </ion-fab-button>
     <ion-label slot="end">Tontine</ion-label>
   </ion-fab-list>

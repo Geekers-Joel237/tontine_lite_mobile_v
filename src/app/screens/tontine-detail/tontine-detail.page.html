@@ -18,8 +18,8 @@
   <ion-grid>
     <ion-card class="ion-no-border custom-bottom ion-padding">
       <ion-row>
-        <ion-col size="6" class="custom-center">
-            <ion-text class="custom" >{{currentTontine.nomT}}</ion-text>
+        <ion-col size="6" >
+            <ion-text >{{currentTontine.nomT}}</ion-text>
         </ion-col>
         <ion-col size="3"></ion-col>
         <ion-col size="3">
@@ -62,20 +62,19 @@
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-text>
-          {{currentTontine.membres.length+' membres'}}
-        </ion-text>
+        <ion-col>
+          <ion-text>
+            {{currentTontine.membres.length+' membres'}}
+          </ion-text>
+        </ion-col>
       </ion-row>
       <ion-row>
-        <ion-text>
-          {{currentTontine.created_at | date:'dd/MM/yyyy'}}
-        </ion-text>
+        <ion-col>
+          <ion-text>
+            {{currentTontine.created_at | date:'dd/MM/yyyy'}}
+          </ion-text>
+        </ion-col>
       </ion-row>
-      <!-- <ion-row>
-        <ion-text>
-          Frequence Tontine
-        </ion-text>
-      </ion-row> -->
     </ion-card>
   </ion-grid>
 
@@ -158,6 +157,10 @@
           </ng-template>
         </ion-modal>
       </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="3">
+      </ion-col>
       <ion-col size="6">
         <ion-card color="success" class="ion-padding ion-text-center">
           <ion-row>
@@ -167,30 +170,16 @@
           </ion-row>
           <ion-row>
             <ion-text class="sub-card ">
-              {{currentTontine.cotisations.length}} XAF
+              {{currentTontine.cotisations.length}}
             </ion-text>
           </ion-row>
         </ion-card>
       </ion-col>
-      <!-- <ion-col size="2">
-      </ion-col> -->
-      <ion-col size="6">
-        <ion-card color="success" class="ion-padding ion-text-center">
-          <ion-row>
-            <ion-text class="sub-card ">
-              Membres
-            </ion-text>
-          </ion-row>
-          <ion-row>
-            <ion-text class="sub-card ">
-              {{currentTontine.membres.length}}
-            </ion-text>
-          </ion-row>
-        </ion-card>
+      <ion-col size="3">
       </ion-col>
     </ion-row>
 
-    <ion-row class="ion-padding">
+    <ion-row class="ion-padding-horizontal">
       <ion-col size="9">
         <ion-text color="dark">
           Tous les exercices
@@ -201,7 +190,7 @@
       </ion-col>
     </ion-row>
     <ion-grid *ngIf="currentTontine.exercices">
-      <ion-card class="ion-padding" *ngFor="let item of currentTontine.exercices;let i = index;" (click)="goToExercice(item.id,i)">
+      <ion-card class="ion-padding" *ngFor="let item of currentTontine.exercices.data;let i = index;" (click)="goToExercice(item.id,i)">
         <ion-row>
           <ion-col size="6">
             <ion-text>Exercice No {{i+1}}</ion-text>
@@ -217,7 +206,7 @@
         </ion-row>
         <ion-row>
           <ion-col size="6">
-            <ion-text>Membres</ion-text>
+            <ion-text *ngIf="currentTontine.membres" > Membres</ion-text>
           </ion-col>
           <ion-col size="6" class="ion-text-end">
             <ion-text>
@@ -230,7 +219,7 @@
 
       </ion-card>
     </ion-grid>
-    <ion-row class="ion-padding">
+    <ion-row class="ion-padding-horizontal">
       <ion-col size="9">
         <ion-text color="dark" *ngIf="currentTontine.membres.length > 0">
           Tous les membres
@@ -245,7 +234,7 @@
               <ion-searchbar placeholder="Search" (click)="modal.setCurrentBreakpoint(0.75)" [(ngModel)]="searchInput">
               </ion-searchbar>
               <ion-list>
-                <ion-item *ngFor="let item of currentTontine.membres | filter:searchInput">
+                <ion-item *ngFor="let item of currentTontine.exercices.data | filter:searchInput">
                   <ion-avatar slot="start">
                     <ion-img src="https://i.pravatar.cc/300?u=b"></ion-img>
                   </ion-avatar>
@@ -273,9 +262,9 @@
     </ion-row>
 
     <ion-grid>
-      <ion-card *ngIf="currentTontine.membres.length > 0">
-        <ion-list>
-          <ion-item *ngFor="let item of currentTontine.membres">
+      <ion-card *ngIf="duringExercices.length > 0">
+        <ion-list *ngIf="check">
+          <ion-item *ngFor="let item of duringExercices">
             <ion-avatar slot="start">
               <ion-img src="https://i.pravatar.cc/300?u=b"></ion-img>
             </ion-avatar>
@@ -283,8 +272,11 @@
               <h2>{{item.nom+' '+item.prenom}}</h2>
               <p>Depuis le {{item.created_at | date:'dd/MM/yyyy'}}</p>
             </ion-label>
-            <ion-note slot="end" *ngIf="item.estActif" color="success">
+            <ion-note slot="end" *ngIf="item.estActif && item.user_id !== currentTontine.user_id" color="success">
               <p >Actif</p>
+            </ion-note>
+            <ion-note slot="end" *ngIf="item.user_id === currentTontine.user_id" color="success">
+              <p >Admin</p>
             </ion-note>
             <ion-note slot="end" *ngIf="!item.estActif" color="warning">
               <p >Suspendu</p>
@@ -293,7 +285,7 @@
           </ion-list>
       </ion-card>
     </ion-grid>
-    <ion-row class="ion-padding" *ngIf="currentTontine.user_id === currentUser.user.id">
+    <ion-row class="ion-padding-horizontal" *ngIf="currentTontine.user_id === currentUser.user.id">
       <ion-col size="9">
         <ion-text color="dark" *ngIf="currentTontine.demandes.length > 0">
           Toutes les demandes

@@ -32,4 +32,32 @@ export class SeancesService {
   getSeanceInfo(id: number): Observable<any>{
     return this.http.get<any>(environment.apiUrl+'/seances-info/'+id);
   }
+
+  postRetard(params: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/retards`,params);
+  }
+
+  postCotisation(params: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/cotisations`,params);
+  }
+  postEchec(params: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/echecs`,params);
+  }
+
+  // getAllCotisations(seanceId: number): Observable<any>{
+  //   return this.http.get<any>(environment.apiUrl+'/seances-info/'+id);
+  // }
+
+  payedRetard(id: number): Observable<boolean> {
+    return this.http.put<boolean>(`${environment.apiUrl}/retards/${id}`,{
+      statut:true
+    });
+  }
+
+  payedEchec(id: number): Observable<boolean> {
+    return this.http.put<boolean>(`${environment.apiUrl}/echecs/${id}`,{
+      statut:true
+    });
+  }
+
 }

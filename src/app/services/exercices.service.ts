@@ -36,4 +36,19 @@ export class ExercicesService {
       etatE:true
     });
   }
+
+  setMemberToExercice(idMembre: any,idExercice: number){
+    return this.http.put<any>(environment.apiUrl+'/membres/'+idMembre,{
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      exercice_id: idExercice});
+  }
+
+  createBeneficiaire(params: any){
+    return this.http.post<any>(environment.apiUrl+'/beneficiaires',params);
+  }
+
+  getBeneficiairesBySeanceId(seanceId: number){
+    return this.http.post<any>(environment.apiUrl+'/beneficiaires/search',{seance_id:seanceId});
+
+  }
 }

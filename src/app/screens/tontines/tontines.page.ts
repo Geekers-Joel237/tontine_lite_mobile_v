@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { TontinesService } from 'src/app/services/tontines.service';
-import { ActionSheetController, IonModal } from '@ionic/angular';
+import { ActionSheetController, IonModal, ModalController } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
@@ -10,6 +10,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import { SocialSharing } from '@awesome-cordova-plugins/social-sharing/ngx';
+import { AddTontinePage } from 'src/app/modalsPages/add-tontine/add-tontine.page';
 
 @Component({
   selector: 'app-tontines',
@@ -36,7 +37,9 @@ export class TontinesPage implements OnInit {
     private toastController: ToastController,
     private router: Router,
     private fb: FormBuilder,
-    private socialSharing: SocialSharing
+    private socialSharing: SocialSharing,
+    private modalCtrl: ModalController,
+
 
 
 
@@ -89,7 +92,6 @@ export class TontinesPage implements OnInit {
       this.tontineService.getAllTontines().subscribe(
         (data)=>{
           this.tontines = data.data;
-          console.log(this.tontines);
         },
         (err)=>{
           console.log(err);
@@ -99,14 +101,14 @@ export class TontinesPage implements OnInit {
 
 
   async presentActionSheet(item: any) {
-    if(this.mesTontines && this.mesTontines.includes(item.id)){
+    if(this.mesTontines && this.mesTontines.includes(item.id) && item.user_id !== this.currentUser.user.id){
       this.presentToast('top','Tentative d\'integration deja faite','warning');
-    }else if(this.demandes && this.demandes.includes(item.id)){
+    }else if(this.demandes && this.demandes.includes(item.id) && item.user_id !== this.currentUser.user.id){
       this.presentToast('top','Tentative d\'integration deja faite','warning');
     }
     else{
       if(item.user_id === this.currentUser.user.id){
-        console.log('on partage plutot');
+        // console.log('on partage plutot');
       }else{
         const actionSheet = await this.actionSheetController.create({
           header:item.nomT,
@@ -122,27 +124,32 @@ export class TontinesPage implements OnInit {
             text: item.user_id === this.currentUser.user.id ? 'Partager' : 'Integrer' ,
             icon: 'share',
             handler: () => {
-              if(item.type === 'Fermee'){
+              if(item.exercices.length > 0){
+                console.log(item);
+                if(item.type === 'Fermee'){
 
-                const len = item.membres.length;
-                console.log('Fermee');
-                if( len <= item.maxT){
-                  console.log('on peut integrer');
-                  this.presentAlert(item);
+                  const len = item.membres.length;
+                  // console.log('Fermee');
+                  if( len <= item.maxT){
+                    console.log('on peut integrer');
+                    this.presentAlert(item);
+                  }else{
+                    // console.log('effectif atteint', item.membres.length);
+                    this.presentToast('top','Tontine Deja Pleine','warning');
+                  }
                 }else{
-                  console.log('effectif atteint', item.membres.length);
-                  this.presentToast('top','Tontine Deja Pleine','warning');
-                }
-              }else{
-                console.log('Ouverte');
-                if(item.user_id !== this.currentUser.user.id){
-                  this.postDemande({user_id:this.currentUser.user.id,tontine_id:item.id,exercice_id:null});
-                  this.getTontinesDemandesUser(this.currentUser.user.id,true);
-                } else{
-                  this.presentToast('top','Vous etes deja membre','warning');
-                }
+                  // console.log('Ouverte');
+                  if(item.user_id !== this.currentUser.user.id){
+                    this.postDemande({user_id:this.currentUser.user.id,tontine_id:item.id,exercice_id:null});
+                    this.getTontinesDemandesUser(this.currentUser.user.id,true);
+                  } else{
+                    this.presentToast('top','Vous etes deja membre','warning');
+                  }
 
-                }
+                  }
+              }else{
+                this.presentToast('top','Cette tontine ne possede pas encore d\'exercices , Veuillez reessayer plus tard','warning');
+              }
             }
           }, {
             text: 'Fermer',
@@ -186,13 +193,17 @@ export class TontinesPage implements OnInit {
           text: 'Envoyer',
           handler: (alertData) => { //takes the data
             if(alertData.code === item.codeAdhesion){
-              this.tontineService.postMembre({user_id:this.user.id,tontine_id:item.id,exercice_id:null})
+              this.tontineService.postMembre({
+                user_id:this.user.id,
+                tontine_id:item.id,
+                exercice_id:item.exercices[item.exercices.length - 1].id})
               .subscribe((data)=>{
                   console.log(data);
                   this.getTontinesUser(this.user.id);
+                  this.presentToast('top','Adhesion Reussie','success');
               },(err)=>{
                 console.log(err);
-              this.presentToast('top','Erreur Survenue','danger');
+              this.presentToast('top','Erreur Survenue , Veuillez Reessayer','danger');
 
               });
             }else{
@@ -308,6 +319,20 @@ handleDetail(item: any)
 cancel() {
   this.modal.dismiss(null, 'cancel');
 }
+
+async openNewTontineModal(){
+  const tontineModal = await this.modalCtrl.create({
+    component:AddTontinePage,
+    breakpoints:[0,0.75,0.95],
+    initialBreakpoint:0.75,
+    animated:true,
+    handle:true,
+  });
+
+  await tontineModal.present();
+
+}
+
 
 confirm() {
   console.log(this.formGroup.value);

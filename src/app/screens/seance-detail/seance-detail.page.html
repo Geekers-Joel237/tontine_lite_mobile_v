@@ -2,13 +2,13 @@
   <ion-toolbar color="primary">
     <ion-row >
       <ion-col size="3">
-        <ion-icon name="arrow-back-outline" size="medium" (click)="goBack()" *ngIf="currentTontine.user_id === currentUser.user.id"></ion-icon>
+        <ion-icon name="arrow-back-outline" size="medium" (click)="goBack()"></ion-icon>
       </ion-col>
       <ion-col size="6">
           <ion-title color="light" class="text-title ion-text-center ion-text-capitalize">Detail Seance</ion-title>
       </ion-col>
       <ion-col size="3" class="ion-text-end ion-padding-end" >
-        <ion-icon id="click-trigger" name="ellipsis-vertical-outline"></ion-icon>
+        <ion-icon id="click-trigger" name="ellipsis-vertical-outline" *ngIf="currentUser.user.id === currentTontine.user_id"></ion-icon>
         <ion-popover trigger="click-trigger" triggerAction="click" >
           <ng-template class="custom-popover">
             <ion-content class="ion-padding " >
@@ -88,7 +88,7 @@
           </ion-col>
           <ion-col size="4" >
             <ion-note >
-              {{(currentTontine.montantT / currentExercice.nbreBenef) | currency:'XAF'}}
+              {{((currentTontine.montantT * currentSeance.cotisations.length) / currentExercice.nbreBenef) | currency:'XAF'}}
             </ion-note>
           </ion-col>
         </ion-row>
@@ -146,13 +146,20 @@
         <ion-segment (ionChange)="segmentChanged($event)" value='cotisations'>
           <ion-segment-button value="cotisations" *ngIf="currentSeance">
             <ion-label class="text-title">Cotisations
+              <ion-badge class="sub" >{{currentSeance.cotisations.length}}/{{currentExercice.membres.length}}</ion-badge>
             </ion-label>
           </ion-segment-button>
           <ion-segment-button value="retards">
-            <ion-label class="text-title">Retards</ion-label>
+            <ion-label class="text-title" *ngIf="currentSeance">Retards
+              <ion-badge class="sub" *ngIf="currentSeance.retards">{{currentSeance.retards.length}}</ion-badge>
+
+            </ion-label>
           </ion-segment-button>
           <ion-segment-button  value="echecs">
-            <ion-label class="text-title"> Echecs</ion-label>
+            <ion-label class="text-title" *ngIf="currentSeance"> Echecs
+              <ion-badge class="sub" *ngIf="currentSeance.echecs">{{currentSeance.echecs.length}}</ion-badge>
+
+            </ion-label>
           </ion-segment-button>
         </ion-segment>
       </ion-row>
@@ -160,18 +167,38 @@
 
     <ion-grid>
       <ion-grid *ngIf="currentSegment === 'cotisations' && currentSeance">
-        <ion-card *ngIf="currentSeance.cotisations.length > 0">
-          <ion-list>
-            <ion-item *ngFor="let item of currentSeance.cotisations" >
-              <ion-avatar slot="start">
-                <ion-img src="https://i.pravatar.cc/300?u=b"></ion-img>
-              </ion-avatar>
-              <ion-label>
-                <h2>{{item.nom+' '+item.prenom}}</h2>
-                <p>{{item.created_at | date:'dd/MM/yyyy'}}</p>
-              </ion-label>
-              <ion-checkbox slot="end" [(ngModel)]="cucumber" (ionChange)="updateCucumber()"></ion-checkbox>
-            </ion-item>
+        <ion-card *ngIf="currentExercice">
+          <ion-list *ngIf="currentExercice.membres.length > canBeCotiser.length">
+            <div *ngFor="let item of currentExercice.membres">
+              <div *ngIf="!canBeCotiser.includes(item.id)">
+                <ion-row >
+                  <ion-item lines="full" class="custom-item">
+                    <ion-avatar slot="start">
+                      <ion-img src="https://i.pravatar.cc/300?u=b"></ion-img>
+                    </ion-avatar>
+                      <ion-label slot="">
+                        <h2>{{item.nom +' '+item.prenom}}</h2>
+                        <p>{{item.created_at | date:'dd/MM/yyyy'}}</p>
+                      </ion-label>
+                      <ion-button  size="small" shape="round"
+                   fill="outline"
+                   color="primary"
+                   slot="end"
+                   class="custom-btn"
+                   (click)="onSubmit(item)"
+                   *ngIf="currentTontine.user_id === currentUser.user.id"
+                   >Cotiser</ion-button>
+                   <!-- <ion-button  size="small" shape="round"
+                   fill="outline"
+                   color="danger"
+                   slot="end"
+                   class="custom-btn"
+                   >Regle</ion-button> -->
+                  </ion-item>
+                </ion-row>
+              </div>
+
+            </div>
             </ion-list>
         </ion-card>
       </ion-grid>
@@ -190,7 +217,21 @@
               <ion-button slot="end"  size="small" shape="round"
                    fill="outline"
                    color="warning"
+                   *ngIf="!item.statut"
+                   (click)="payedRetard(item)"
                    >Payer</ion-button>
+                   <ion-button slot="end"  size="small" shape="round"
+                   fill="outline"
+                   color="success"
+                  *ngIf="item.statut "
+                  disabled="item.statut"
+                   >Regle</ion-button>
+                   <ion-button slot="end"  size="small" shape="round"
+                   fill="outline"
+                   color="warning"
+                  *ngIf="!item.statut && currentTontine.user_id !== currentUser.user.id"
+                  disabled="item.statut"
+                   >En Attente</ion-button>
             </ion-item>
 
             </ion-list>
@@ -206,12 +247,28 @@
               </ion-avatar>
               <ion-label>
                 <h2>{{item.nom+' '+item.prenom}}</h2>
-                <p>{{item.created_at | date:'dd/MM/yyyy'}} </p>
+                <p *ngIf="!item.statut">{{item.created_at | date:'dd/MM/yyyy'}} </p>
+                <p color="warning" *ngIf="item.statut" >{{item.updated_at | date:'dd/MM/yyyy'}} </p>
               </ion-label>
               <ion-button slot="end"  size="small" shape="round"
                    fill="outline"
                    color="danger"
+                   (click)="payedEchec(item)"
+                  *ngIf="!item.statut && currentTontine.user_id === currentUser.user.id"
                    >Payer</ion-button>
+                   <ion-button slot="end"  size="small" shape="round"
+                   fill="outline"
+                   color="success"
+                  *ngIf="item.statut"
+                  disabled="item.statut"
+                   >Regle</ion-button>
+                   <ion-button slot="end"  size="small" shape="round"
+                   fill="outline"
+                   color="warning"
+                  *ngIf="!item.statut && currentTontine.user_id !== currentUser.user.id"
+                  disabled="item.statut"
+                   >En Attente</ion-button>
+
             </ion-item>
             </ion-list>
         </ion-card>

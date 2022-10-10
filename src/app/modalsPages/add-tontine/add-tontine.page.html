@@ -1,24 +1,10 @@
-<ion-header class="ion-no-border">
-  <ion-toolbar color="primary">
-    <ion-row >
-      <ion-col size="3">
-        <ion-icon name="arrow-back-outline" size="medium" [routerLink]="['/tabs-menu/tontines']"></ion-icon>
-      </ion-col>
-      <ion-col size="6">
-        <ion-title color="light" class="text-title ion-text-center ion-text-capitalize">Tontine Lite</ion-title>
-      </ion-col>
-      <ion-col size="3" >
-      </ion-col>
-    </ion-row>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content color="secondary">
-<ion-grid class="ion-margin-vertical">
-  <ion-row>
-    <ion-card style="width:100%">
-      <ion-card-content>
+<ion-content color="secondary" class="ion-padding">
         <form [formGroup]="formGroup" >
+          <ion-row class="ion-margin-vertical">
+            <ion-text color="dark">
+              Infos Generales
+            </ion-text>
+          </ion-row>
           <ion-item>
             <ion-label position="stacked" class="label-text">Nom Tontine</ion-label>
             <ion-input formControlName="nomT" class="label-text" inputmode="text"placeholder="nom Tontine"></ion-input>
@@ -48,6 +34,11 @@
             <ion-input formControlName="slogan" class="label-text" inputmode="text" placeholder="Votre Slogan"></ion-input>
             <ion-note slot="error" class="label-text" *ngIf="(slogan.dirty||slogan.touched)&& slogan.errors">champ slogan requis</ion-note>
           </ion-item>
+          <ion-row class="ion-margin-vertical">
+            <ion-text color="dark">
+              Parametres
+            </ion-text>
+          </ion-row>
           <ion-item>
             <ion-label position="stacked" class="label-text">Montant Retard</ion-label>
             <ion-input formControlName="retard"class="label-text" min="1" type="number" inputmode="tel" placeholder="Montant Retard"></ion-input>
@@ -63,6 +54,11 @@
             <ion-input formControlName="sanction"class="label-text" min="1" type="number" inputmode="tel" placeholder="Montant sanction"></ion-input>
             <ion-note slot="error" class="label-text" *ngIf="(sanction.dirty||sanction.touched)&& sanction.errors">champ sanction requis</ion-note>
           </ion-item>
+          <ion-row class="ion-margin-vertical">
+            <ion-text color="dark">
+              Reglement
+            </ion-text>
+          </ion-row>
           <ion-item>
             <ion-label position="stacked" class="label-text">Reglement</ion-label>
             <ion-textarea placeholder="Veuillez entrer du texte ou joindre un fichier (25 characteres min)" rows="6" cols="20" class="label-text" formControlName="reglement">
@@ -84,9 +80,9 @@
             <ion-button expand="full" (click)="onSubmit()" class="ion-text-capitalize" >Creer</ion-button>
           </ion-row> -->
         </form>
-      </ion-card-content>
+      <!-- </ion-card-content>
     </ion-card>
-  </ion-row>
+  </ion-row> -->
 
-</ion-grid>
+<!-- </ion-grid> -->
 </ion-content>

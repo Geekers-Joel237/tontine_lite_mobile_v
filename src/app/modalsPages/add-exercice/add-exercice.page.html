@@ -1,7 +1,6 @@
-
-
-<ion-content color="secondary">
+<ion-content color="secondary" class="ion-padding">
   <form  [formGroup]="formGroup">
+
     <ion-item>
       <ion-label position="stacked" class="label-text">Date Debut</ion-label>
       <ion-input formControlName="dateDebutE" class="label-text" type="date"></ion-input>
@@ -15,10 +14,10 @@
     <ion-item>
       <ion-label position="stacked" class="label-text">Periodicite</ion-label>
       <ion-select (ionChange)="setCycle($event)" placeholder="Periodicite"  class="label-text" formControlName="periodicite" >
-        <ion-select-option value="Jour">Jour</ion-select-option>
-        <ion-select-option value="Semaine" >Semaine</ion-select-option>
+        <ion-select-option value="Jours">Jours</ion-select-option>
+        <ion-select-option value="Semaines" >Semaines</ion-select-option>
         <ion-select-option value="Mois" >Mois</ion-select-option>
-        <ion-select-option value="Annee" >Annee</ion-select-option>
+        <ion-select-option value="Annees" >Annees</ion-select-option>
       </ion-select>
       <ion-note slot="error" class="label-text" *ngIf="(periodicite.dirty||periodicite.touched)&& periodicite.errors">champ periodicite requis</ion-note>
     </ion-item>

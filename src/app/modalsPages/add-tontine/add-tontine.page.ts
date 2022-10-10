@@ -2,7 +2,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ToastController } from '@ionic/angular';
+import { LoadingController, ToastController } from '@ionic/angular';
 import { TontinesService } from 'src/app/services/tontines.service';
 
 @Component({
@@ -21,6 +21,8 @@ export class AddTontinePage implements OnInit {
     private tontineService: TontinesService,
     private router: Router,
     private toastController: ToastController,
+    private loadingCtrl: LoadingController,
+
 
 
   ) { }
@@ -57,7 +59,6 @@ export class AddTontinePage implements OnInit {
     }
 
 
-      // check:[false,Validators.required]
 
 
 
@@ -90,12 +91,19 @@ export class AddTontinePage implements OnInit {
   }
 
 
-  onSubmit(){
+  async onSubmit(){
     if(this.formGroup.invalid){
       this.presentToast('top','Champs Requis','danger');
       console.log('invalid form');
     }else{
       console.log(this.formGroup.value);
+      const loading = await this.loadingCtrl.create({
+        message: 'En Cours...',
+        // duration: 3000,
+        spinner: 'circles',
+      });
+
+      loading.present();
       this.tontineService.createNewTontine(this.formGroup.value).subscribe((data)=>{
         console.log(data);
         if(this.files.length > 0){
@@ -107,25 +115,26 @@ export class AddTontinePage implements OnInit {
           this.tontineService.sendFiles(formData).subscribe(
             (val)=>{
               console.log(val);
-              this.presentToast('top','Tontine Cree','success');
-              this.router.navigate(['/tabs-menu/tontines']);
+              loading.dismiss();
+              this.presentToast('top','Reglement Ajoute','success');
+              // this.router.navigate(['/tabs-menu/demandes']);
+              window.location.reload();
             },
             (err)=>{console.log(err);
             this.presentToast('top','Erreur Veuillez Recommencer','danger');
             }
           );
         }
-        this.tontineService.postMembre({user_id:this.user.id,tontine_id:data.data.id,exercice_id:null})
-          .subscribe((value)=>{
-              console.log(value);
+              loading.dismiss();
               this.presentToast('top','Tontine Cree','success');
-              this.router.navigate(['/tabs-menu/tontines']);
-          },(err)=>{
-            console.log(err);
+              // this.router.navigate(['/tabs-menu/demandes']);
+              window.location.reload();
 
-          });
+
       },(err)=>{
         console.log(err);
+        this.presentToast('top','Erreur Veuillez Recommencer','danger');
+
       });
     }
   }

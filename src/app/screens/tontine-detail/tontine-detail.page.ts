@@ -1,3 +1,4 @@
+/* eslint-disable arrow-body-style */
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -8,6 +9,7 @@ import { ModalController, NavParams } from '@ionic/angular';
 import { AddExercicePage } from 'src/app/modalsPages/add-exercice/add-exercice.page';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
+import { UpdateTontinePage } from 'src/app/modalsPages/update-tontine/update-tontine.page';
 
 @Component({
   selector: 'app-tontine-detail',
@@ -22,6 +24,9 @@ export class TontineDetailPage implements OnInit {
   searchInput = '';
   handlerMessage = '';
   roleMessage = '';
+  duringExercices = [];
+  check = false;
+  len = 0;
 
   constructor(
     private router: Router,
@@ -56,6 +61,12 @@ export class TontineDetailPage implements OnInit {
       (data)=>{
         console.log(data);
         this.currentTontine = data.data;
+        this.duringExercices = this.currentTontine.exercices.data.filter((exercice) => {
+          return exercice.statusE === 1;
+        });
+        console.log(this.duringExercices);
+        this.check = !this.check;
+        this.len = this.duringExercices.length;
       },(err)=>console.log(err)
     );
   }
@@ -131,6 +142,7 @@ export class TontineDetailPage implements OnInit {
   }
 
   refuseDemande(idDem: number,idUser: number){
+    console.log(this.duringExercices);
     this.demandeService.cancelDemande(idDem,idUser).subscribe((data)=>{
       console.log(data);
       this.getTontineInfo(this.id);
@@ -146,7 +158,11 @@ export class TontineDetailPage implements OnInit {
       this.demandeService.acceptDemande(idDem,idUser).subscribe((data)=>{
         console.log(data);
         this.presentToast('top','Demande Acceptee','success');
-        this.tontineService.postMembre({user_id:idUser,tontine_id:this.currentTontine.id,exercice_id:null})
+        this.tontineService.postMembre({
+          user_id:idUser,
+          tontine_id:this.currentTontine.id,
+          exercice_id:this.duringExercices[this.duringExercices.length -1].id}
+          )
                 .subscribe((value)=>{
                     console.log(value);
                     this.getTontineInfo(this.id);
@@ -180,27 +196,36 @@ export class TontineDetailPage implements OnInit {
   }
 
   async presentExerciceModal(){
-    const exerciceModal = await this.modalCtrl.create({
-      component:AddExercicePage,
-      breakpoints:[0,0.75],
-      initialBreakpoint:0.75,
-      animated:true,
-      handle:true,
-      componentProps:{
-        id:this.id,
-      }
-    });
-    console.log(this.id);
-    await exerciceModal.present();
+    this.duringExercices = this.currentTontine.exercices.data.filter((exercice) => exercice.statusE);
+    if(this.duringExercices.length < 1) {
+      const exerciceModal = await this.modalCtrl.create({
+        component:AddExercicePage,
+        breakpoints:[0,0.75],
+        initialBreakpoint:0.75,
+        animated:true,
+        handle:true,
+        componentProps:{
+          id:this.id,
+        }
+      });
+      console.log(this.id);
+      await exerciceModal.present();
+    } else {
+      this.presentToast('top','Vous avez deja une tontine en cours','warning');
+    }
   }
 
   async presentUpdateTontineModal(){
     const updateTontineModal = await this.modalCtrl.create({
-      component:AddExercicePage,
-      breakpoints:[0,0.75],
+      component:UpdateTontinePage,
+      breakpoints:[0,0.75,0.95],
       initialBreakpoint:0.75,
       animated:true,
       handle:true,
+      componentProps:{
+        currentTontine:this.currentTontine,
+        id:this.id
+      }
 
 
     });

@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ToastController } from '@ionic/angular';
+import { LoadingController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
 import { country } from './countries';
 
@@ -22,6 +23,8 @@ export class RegisterPage implements OnInit {
     private authService: AuthService,
     private router: Router,
     private toastController: ToastController,
+    private loadingCtrl: LoadingController,
+
   ) { }
 
   get nom(){return this.formGroup.get('nom');}
@@ -83,10 +86,20 @@ export class RegisterPage implements OnInit {
     if(this.formGroup.value.password === this.formGroup.value.password2){
       if(this.formGroup.value.check){
         this.formGroup.value.telephone = '+'+this.code + this.formGroup.value.telephone.replace(/\s/g, '');
+
+        const loading = await this.loadingCtrl.create({
+          message: 'En Cours...',
+          // duration: 3000,
+          spinner: 'circles',
+        });
+
+        loading.present();
+
         this.authService.register(this.formGroup.value)
         .subscribe((data)=>{
           localStorage.setItem('user',JSON.stringify(data));
           console.log('Success', data);
+          loading.dismiss();
         this.presentToast('top','Register Success','success');
           this.router.navigate(['/tabs-menu/tontines']);
 

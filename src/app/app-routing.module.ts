@@ -25,7 +25,7 @@ const routes: Routes = [
   },
   {
     path: 'add-tontine',
-    loadChildren: () => import('./screens/add-tontine/add-tontine.module').then( m => m.AddTontinePageModule)
+    loadChildren: () => import('./modalsPages/add-tontine/add-tontine.module').then( m => m.AddTontinePageModule)
   },
   {
     path: 'menu',
@@ -62,6 +62,18 @@ const routes: Routes = [
   {
     path: 'update-exrcice',
     loadChildren: () => import('./modalsPages/update-exrcice/update-exrcice.module').then( m => m.UpdateExrcicePageModule)
+  },
+  {
+    path: 'membre-detail',
+    loadChildren: () => import('./screens/membre-detail/membre-detail.module').then( m => m.MembreDetailPageModule)
+  },
+  {
+    path: 'add-parametre',
+    loadChildren: () => import('./modalsPages/add-parametre/add-parametre.module').then( m => m.AddParametrePageModule)
+  },
+  {
+    path: 'add-beneficiaires',
+    loadChildren: () => import('./modalsPages/add-beneficiaires/add-beneficiaires.module').then( m => m.AddBeneficiairesPageModule)
   },
   // {
   //   path: 'tabs-menu/tontines',

@@ -77,5 +77,7 @@ tontineFilter(params: any): Observable<any>{
   return this.http.post<any>(environment.apiUrl+'/tontines/filter',params);
 }
 
-
+updateTontine(params: any,id: number): Observable<any>{
+  return this.http.put<any>(environment.apiUrl+'/tontines/'+id,params);
+}
 }
