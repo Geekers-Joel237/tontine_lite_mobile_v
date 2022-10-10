@@ -78,7 +78,7 @@ export class AddExercicePage implements OnInit {
     console.log(this.formGroup.value);
     }else{
        const loading =  this.loadingController.create({
-        message: 'Traitement en Cours'
+        message: 'En Cours ...'
 
       });
 
@@ -96,15 +96,17 @@ export class AddExercicePage implements OnInit {
           .subscribe(async (value)=>{
               console.log(value);
               (await loading).dismiss();
-          },(err)=>{
+          },async (err)=>{
             console.log(err);
+             (await loading).dismiss();
 
           });
         this.generateSeances(data.data);
 
 
-      },(err)=>{
+      },async (err)=>{
         console.log(err);
+        (await loading).dismiss();
         this.presentToast('top','Une erreur est survenue, Veuillez reessayer plus tard','danger');
       });
 

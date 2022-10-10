@@ -104,9 +104,10 @@ export class RegisterPage implements OnInit {
           this.router.navigate(['/tabs-menu/tontines']);
 
         },(err)=>{
-        this.presentToast('top','Numero de Telephone deja utilise','danger');
+        this.presentToast('top','Numero de Telephone deja utilise ou autre,veuillez reessayer ...','danger');
+        loading.dismiss();
           console.log('Error',err);
-          this.ngOnInit();
+          // this.ngOnInit();
         });
       } else {
         this.presentToast('top','Veuillez accepter les conditions','warning');

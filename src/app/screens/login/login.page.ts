@@ -68,6 +68,8 @@ export class LoginPage implements OnInit {
         console.log(this.formGroup.value);
         console.log('Error',err);
         this.presentToast('top','Informations Incorrectes','danger');
+        loading.dismiss();
+
   });
     }}
 
