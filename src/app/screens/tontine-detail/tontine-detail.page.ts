@@ -211,7 +211,7 @@ export class TontineDetailPage implements OnInit {
       console.log(this.id);
       await exerciceModal.present();
     } else {
-      this.presentToast('top','Vous avez deja une tontine en cours','warning');
+      this.presentToast('top','Vous avez deja un exercice en cours','warning');
     }
   }
 

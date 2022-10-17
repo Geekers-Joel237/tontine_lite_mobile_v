@@ -73,8 +73,8 @@ export class UpdateExrcicePage implements OnInit {
       // this.presentToast('top','Champs Requis','danger');
     console.log(this.formGroup.value);
     }else{
-      this.tontineService.createNewExercice(
-        this.formGroup.value
+      this.tontineService.updateExercice(
+        this.formGroup.value,this.params.id
       ).subscribe((data)=>{
         console.log(data);
         this.generateSeances(data.data);

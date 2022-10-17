@@ -22,7 +22,7 @@ export class AddExercicePage implements OnInit {
   facteur: number;
   dateDebutExercice: Date;
   user = null;
-
+  i = 0;
 
 
   constructor(
@@ -145,9 +145,11 @@ export class AddExercicePage implements OnInit {
       console.log(dateArr);
     }
     for(const date of dateArr){
+      ++this.i;
       this.tontineService.createNewSeance({
         dateS: date,
-        exercice_id: data.id
+        exercice_id: data.id,
+        numero:this.i
       }).subscribe(
         (val)=>console.log(val),
         (err)=>console.log(err)

@@ -106,7 +106,7 @@
           </ion-row>
           <ion-row>
             <ion-text class="sub-card">
-              {{currentSeance.cotisations.length}}
+              {{(currentSeance.cotisations.length * currentTontine.montantT) | currency:'XAF'}}
             </ion-text>
           </ion-row>
         </ion-card>
@@ -143,7 +143,7 @@
 
     <ion-row>
       <ion-row class="ion-padding-horizontal">
-        <ion-segment (ionChange)="segmentChanged($event)" value='cotisations'>
+        <ion-segment (ionChange)="segmentChanged($event)" value='cotisations'  >
           <ion-segment-button value="cotisations" *ngIf="currentSeance">
             <ion-label class="text-title">Cotisations
               <ion-badge class="sub" >{{currentSeance.cotisations.length}}/{{currentExercice.membres.length}}</ion-badge>
@@ -217,7 +217,7 @@
               <ion-button slot="end"  size="small" shape="round"
                    fill="outline"
                    color="warning"
-                   *ngIf="!item.statut"
+                  *ngIf="!item.statut && currentTontine.user_id === currentUser.user.id"
                    (click)="payedRetard(item)"
                    >Payer</ion-button>
                    <ion-button slot="end"  size="small" shape="round"

@@ -174,7 +174,7 @@ export class ExerciceDetailPage implements OnInit {
   async presentExerciceModal(id: number,params: any){
     const exerciceModal = await this.modalCtrl.create({
       component:UpdateExrcicePage,
-      breakpoints:[0,0.75],
+      breakpoints:[0,0.75,1],
       initialBreakpoint:0.75,
       animated:true,
       handle:true,
@@ -222,16 +222,30 @@ export class ExerciceDetailPage implements OnInit {
       async (data)=>{
         console.log('data',data);
         this.canBeBenefArr = data.data;
+        console.log(this.canBeBenefArr);
         if(this.canBeBenefArr.length === 0){
           this.memberArr = this.currentExercice.membres;
         }else{
-          this.memberArr = this.currentExercice.membres.filter((member,i)=>member.id !== this.canBeBenefArr[i].membre_id);
-
+          // this.memberArr = this.currentExercice.membres.filter((member,i)=>
+          // {
+          //   return (member.id !== this.canBeBenefArr[i].membre_id);
+          // }
+          const finalMembers = [];
+          const finalMembersId  = [];
+          this.canBeBenefArr.forEach((benef)=>{
+            finalMembersId.push(benef.membre_id);
+          });
+          this.currentExercice.membres.forEach((elt)=>{
+            finalMembersId.includes(elt.id)? null : finalMembers.push(elt);
+          });
+           this.memberArr = finalMembers;
         }
+        console.log(this.memberArr);
 
         const listeBenef = await this.modalCtrl.create({
+
           component:AddBeneficiairesPage,
-          breakpoints:[0,0.75,0.95],
+          breakpoints:[0,0.75,0.95,1],
           initialBreakpoint:0.75,
           animated:true,
           handle:true,
@@ -244,17 +258,10 @@ export class ExerciceDetailPage implements OnInit {
           }
         });
 
-        // listeBenef.onDidDismiss().then((dataReturned) => {
-        //   if (dataReturned !== null) {
-        //     this.dataReturned = dataReturned.data;
-        //     //alert('Modal Sent Data :'+ dataReturned);
-        //   }
-        // });
          setTimeout(async () => {
           await listeBenef.present();
         }, 1500);
-      });
-    // this.getBeneficiairesBySeanceId(item.id,item.id).
+      },(err)=>console.log(err));
 
   }
 
@@ -279,4 +286,9 @@ export class ExerciceDetailPage implements OnInit {
       (err)=> console.log(err )
     );
   }
+
+  navToSeance(id: number){
+    this.router.navigate(['/seance-detail/'+id]);
+  }
+
 }

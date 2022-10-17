@@ -323,8 +323,8 @@ cancel() {
 async openNewTontineModal(){
   const tontineModal = await this.modalCtrl.create({
     component:AddTontinePage,
-    breakpoints:[0,0.75,0.95],
-    initialBreakpoint:0.75,
+    breakpoints:[0,1],
+    initialBreakpoint:1,
     animated:true,
     handle:true,
   });

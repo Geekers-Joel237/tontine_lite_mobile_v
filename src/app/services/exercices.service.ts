@@ -48,6 +48,7 @@ export class ExercicesService {
   }
 
   getBeneficiairesBySeanceId(seanceId: number){
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     return this.http.post<any>(environment.apiUrl+'/beneficiaires/search',{seance_id:seanceId});
 
   }

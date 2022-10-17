@@ -73,6 +73,10 @@ createNewSeance(params: any): Observable<any>{
   return this.http.post<any>(environment.apiUrl+'/seances',params);
 }
 
+updateExercice(params: any,id: number): Observable<any>{
+  return this.http.put<any>(environment.apiUrl+'/exercices/'+id,params);
+}
+
 tontineFilter(params: any): Observable<any>{
   return this.http.post<any>(environment.apiUrl+'/tontines/filter',params);
 }

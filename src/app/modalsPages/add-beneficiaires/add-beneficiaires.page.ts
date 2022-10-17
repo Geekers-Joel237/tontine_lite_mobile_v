@@ -16,6 +16,7 @@ export class AddBeneficiairesPage implements OnInit {
   currentTontine = null;
   currentExercice = null;
   canBeBenefArr = [];
+  searchInput = '';
   constructor(
     private navParams: NavParams,
     private exercicesService: ExercicesService,
@@ -49,6 +50,9 @@ export class AddBeneficiairesPage implements OnInit {
       (data)=>{
         console.log(data);
         this.presentToast('top','Beneficiaire Ajoute','success');
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
         // this.getBeneficiairesBySeanceId(seance.id);
         // window.location.reload();
       },
@@ -57,14 +61,7 @@ export class AddBeneficiairesPage implements OnInit {
   }
 
   getBeneficiairesBySeanceId(seanceId: number,membreId: number){
-    // this.exercicesService.getBeneficiairesBySeanceId(seanceId).subscribe(
-    //   (data)=>{
-    //     console.log('data',data);
-    //     this.canBeBenefArr = data.data;
-    //     this.membresArr = this.membresArr.filter((member,i)=>{
-    //       return member.id !== this.canBeBenefArr[i].membre_id;
-    //     });
-    //     console.log(this.membresArr);
+
         if(this.canBeBenefArr.length < this.currentExercice.nbreBenef){
           this.createBeneficiaire(this.seance,this.currentTontine.montantT,membreId);
         } else{
@@ -72,10 +69,6 @@ export class AddBeneficiairesPage implements OnInit {
         this.presentToast('top','On ne peut plus beneficier','warning');
 
         }
-    //   },(err)=>{
-    //     console.log(err);
-    //   }
-    // );
   }
 
 

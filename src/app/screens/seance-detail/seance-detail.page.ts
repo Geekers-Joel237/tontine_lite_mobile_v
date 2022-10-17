@@ -299,6 +299,7 @@ setCheck2($event){
           if(alertData === 'Retard'){
             this.seancesService.postRetard({
                   statut:false,
+                  numeroSeance:this.currentSeance.numero,
                   membre_id:item.id,
                   seance_id:this.currentSeance.id,
                   exercice_id:this.currentExercice.id,
@@ -334,6 +335,7 @@ setCheck2($event){
 
             this.seancesService.postEchec({
                   statut:false,
+                  numeroSeance:this.currentSeance.numero,
                   membre_id:item.id,
                   seance_id:this.currentSeance.id,
                   exercice_id:this.currentExercice.id,

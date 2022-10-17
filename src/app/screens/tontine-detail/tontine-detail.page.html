@@ -53,6 +53,12 @@
                       </ion-text>
                       <ion-icon slot="end" name="build-outline"></ion-icon>
                     </ion-item>
+                    <ion-item lines="none" *ngIf="currentTontine.type === 'Fermee' ">
+                      <ion-text slot="start">
+                        Code Adhesion
+                      </ion-text>
+                      <ion-icon slot="end" name="build-outline"></ion-icon>
+                    </ion-item>
 
                   </ion-list>
                 </ion-content>
@@ -220,21 +226,23 @@
       </ion-card>
     </ion-grid>
     <ion-row class="ion-padding-horizontal">
-      <ion-col size="9">
-        <ion-text color="dark" *ngIf="currentTontine.membres.length > 0">
+      <ion-col size="9" >
+        <ion-text color="dark">
           Tous les membres
         </ion-text>
       </ion-col>
-      <ion-col size="3" class="ion-text-end">
+      <ion-col size="3" class="ion-text-end" *ngIf="currentTontine.membres">
         <ion-icon color="dark" id="open-modal1" name="ellipsis-horizontal-outline" size="large" *ngIf="currentTontine.membres.length > 0"></ion-icon>
+      </ion-col>
+    </ion-row>
 
-        <ion-modal #modal trigger="open-modal1" [initialBreakpoint]="0.25" [breakpoints]="[0, 0.25, 0.5, 0.75]">
+    <ion-modal #modal trigger="open-modal1" [initialBreakpoint]="0.25" [breakpoints]="[0, 0.25, 0.5, 0.75,1]">
           <ng-template>
             <ion-content>
               <ion-searchbar placeholder="Search" (click)="modal.setCurrentBreakpoint(0.75)" [(ngModel)]="searchInput">
               </ion-searchbar>
               <ion-list>
-                <ion-item *ngFor="let item of currentTontine.exercices.data | filter:searchInput">
+                <ion-item *ngFor="let item of currentTontine.membres | filter:searchInput">
                   <ion-avatar slot="start">
                     <ion-img src="https://i.pravatar.cc/300?u=b"></ion-img>
                   </ion-avatar>
@@ -248,23 +256,20 @@
                   <ion-note slot="end" *ngIf="!item.estActif" color="warning">
                     <p >Suspendu</p>
                   </ion-note>
-                  <ion-row>
+                  <!-- <ion-row>
                     <ion-note  *ngIf="currentTontine.user_id === currentUser.user.id" color="success">
                       <p >Admin</p>
                     </ion-note>
-                  </ion-row>
+                  </ion-row> -->
                 </ion-item>
                 </ion-list>
             </ion-content>
           </ng-template>
         </ion-modal>
-      </ion-col>
-    </ion-row>
-
     <ion-grid>
       <ion-card *ngIf="duringExercices.length > 0">
         <ion-list *ngIf="check">
-          <ion-item *ngFor="let item of duringExercices">
+          <ion-item *ngFor="let item of currentTontine.membresPaginate.data">
             <ion-avatar slot="start">
               <ion-img src="https://i.pravatar.cc/300?u=b"></ion-img>
             </ion-avatar>
